@@ -1,0 +1,413 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         09-NOV-15
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          CUS.CUST_ID as "Cust_ID"
+  3          , CUS.CUST_NAME_LAST as "Cust_Name_Last"
+  4          , (
+  5            select count(ORH.ORDER_ID)
+  6            from
+  7                  BK_ORDER_HEADERS ORH
+  8            where
+  9                  CUS.CUST_ID = ORH.CUST_ID
+ 10            ) as "Number Of Orders"
+ 11  from
+ 12          BK_CUSTOMERS CUS
+ 13  where
+ 14          CUS.CUST_STATE in ('NJ', 'MA')
+ 15  ;
+
+   Cust_ID Cust_Name_Last       Number Of Orders
+---------- -------------------- ----------------
+    208950 Adams                               2
+    258595 Jobs                                2
+    255919 Milton                              0
+    261502 Hawthorne                          26
+    259969 Carlsen                             4
+    239427 Marksa                             12
+    226656 Randall                             3
+    227105 Kafka                              22
+    218709 Bonnard                            12
+    234709 Brahms                              3
+
+10 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          CUS.CUST_ID as "Cust_ID"
+  3          , CUS.CUST_NAME_LAST as "Cust_Name_Last"
+  4  from
+  5          BK_CUSTOMERS CUS
+  6  where
+  7          exists
+  8                  (
+  9                  select 1
+ 10                  from
+ 11                          BK_ORDER_HEADERS ORH
+ 12                  where
+ 13                          ORH.CUST_ID = CUS.CUST_ID
+ 14                          and to_char(ORH.ORDER_DATE, 'YYYY/MM') = (to_char(sysdate, 'YYYY') || '/01')
+ 15                  )
+ 16          and exists
+ 17                  (
+ 18                  select 2
+ 19                  from
+ 20                          BK_ORDER_HEADERS ORH
+ 21                  where
+ 22                          ORH.CUST_ID = CUS.CUST_ID
+ 23                          and to_char(ORH.ORDER_DATE, 'YYYY/MM') = (to_char(sysdate, 'YYYY') || '/02')
+ 24                  )
+ 25          and exists
+ 26                  (
+ 27                  select 3
+ 28                  from
+ 29                          BK_ORDER_HEADERS ORH
+ 30                  where
+ 31                          ORH.CUST_ID = CUS.CUST_ID
+ 32                          and to_char(ORH.ORDER_DATE, 'YYYY/MM') = (to_char(sysdate, 'YYYY') || '/03')
+ 33                  )
+ 34  order by
+ 35          CUS.CUST_ID
+ 36  ;
+
+   Cust_ID Cust_Name_Last
+---------- --------------------
+    212921 Books on Tap
+    234138 Keats
+    272611 Jarrett
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 03 */
+SQL> with AUTHOR_BOOKS as
+  2          (
+  3          select
+  4                  TMP.AUTHOR_ID
+  5                  , (
+  6                    select
+  7                          AUT.AUTHOR_NAME_FIRST
+  8                    from
+  9                          BK_AUTHORS AUT
+ 10                    where
+ 11                          AUT.AUTHOR_ID = TMP.AUTHOR_ID
+ 12                    ) as AUTHOR_NAME_FIRST
+ 13                  , (
+ 14                    select
+ 15                          AUT.AUTHOR_NAME_LAST
+ 16                    from
+ 17                          BK_AUTHORS AUT
+ 18                    where
+ 19                          AUT.AUTHOR_ID = TMP.AUTHOR_ID
+ 20                    ) as AUTHOR_NAME_LAST
+ 21                  , Number_Of_Books
+ 22          from
+ 23                  (
+ 24                  select
+ 25                          AUTHOR_ID
+ 26                          , count(BOOK_ID) as Number_Of_Books
+ 27                  from
+ 28                          BK_BOOK_AUTHORS
+ 29                  group by
+ 30                          AUTHOR_ID
+ 31                  ) TMP
+ 32          )
+ 33  select
+ 34          AUB.AUTHOR_NAME_FIRST as "Author_Name_First"
+ 35          , AUB.AUTHOR_NAME_LAST as "Author_Name_Last"
+ 36          , AUB.AUTHOR_ID as "Author_ID"
+ 37  from
+ 38          AUTHOR_BOOKS AUB
+ 39  where
+ 40          AUB.NUMBER_OF_BOOKS >= 2
+ 41          and not exists
+ 42                  (
+ 43                  select 1
+ 44                  from
+ 45                          BK_BOOK_AUTHORS BAU
+ 46                  where
+ 47                          BAU.AUTHOR_ID = AUB.AUTHOR_ID
+ 48                          and exists
+ 49                                  (
+ 50                                  select 1
+ 51                                  from
+ 52                                          BK_ORDER_DETAILS ORD
+ 53                                  where
+ 54                                          ORD.BOOK_ID = BAU.BOOK_ID
+ 55                                  )
+ 56                  )
+ 57  order by
+ 58          AUB.AUTHOR_ID
+ 59  ;
+
+Author_Name_First    Author_Name_Last     Autho
+-------------------- -------------------- -----
+Willie               Mammoth              M3110
+Pete                 Moss                 M4540
+
+2 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 04 */
+SQL> with SQL_TOPIC_BOOKS as
+  2          (
+  3          select
+  4                  TOP.BOOK_ID
+  5                  , count(TOP.TOPIC_ID) as NUMBER_OF_TOPICS
+  6          from
+  7                  BK_BOOK_TOPICS TOP
+  8          where
+  9                  TOPIC_ID in ('SSRV', 'ORA', 'MYSQL')
+ 10          group by
+ 11                  TOP.BOOK_ID
+ 12          )
+ 13  select
+ 14          STB.BOOK_ID
+ 15          , (
+ 16            select
+ 17                  BOK.TITLE
+ 18            from
+ 19                  BK_BOOKS BOK
+ 20            where
+ 21                  BOK.BOOK_ID = STB.BOOK_ID
+ 22            ) as Title
+ 23  from
+ 24          SQL_TOPIC_BOOKS STB
+ 25  where
+ 26          STB.NUMBER_OF_TOPICS = 2
+ 27  ;
+
+   BOOK_ID TITLE
+---------- ---------------------------------------------------------------------------
+      2028 Mastering Oracle Databases
+      2031 Comparative SQL
+
+2 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select
+  2          ORH.ORDER_DATE as "Order Date"
+  3          , ORH.ORDER_ID as "Order ID"
+  4          , ORH.CUST_ID as "Customer ID"
+  5          , (
+  6            select
+  7                  CUST_NAME_LAST
+  8            from
+  9                  BK_CUSTOMERS CUS
+ 10            where
+ 11                  CUS.CUST_ID = ORH.CUST_ID
+ 12            ) as "Customer"
+ 13          , (
+ 14            select
+ 15                  sum(nvl(ORD.QUANTITY, 0))
+ 16            from
+ 17                  BK_ORDER_DETAILS ORD
+ 18            where
+ 19                  ORD.ORDER_ID = ORH.ORDER_ID
+ 20            ) as "NumberBooks"
+ 21          , (
+ 22            select
+ 23                  sum(nvl(ORD.QUANTITY, 0) * nvl(ORDER_PRICE, 0))
+ 24            from
+ 25                  BK_ORDER_DETAILS ORD
+ 26            where
+ 27                  ORD.ORDER_ID = ORH.ORDER_ID
+ 28            ) as "OrderCost"
+ 29  from
+ 30          BK_ORDER_HEADERS ORH
+ 31  where
+ 32          extract(year from ORH.ORDER_DATE) = extract(year from sysdate) - 1
+ 33          and extract(month from ORH.ORDER_DATE) between 1 and 3
+ 34  order by
+ 35          ORH.ORDER_DATE
+ 36  ;
+
+Order Dat   Order ID Customer ID Customer             NumberBooks  OrderCost
+--------- ---------- ----------- -------------------- ----------- ----------
+18-JAN-14      12855      221297 Dodgson                       12     564.95
+20-JAN-14      12354      290298 Swift
+22-JAN-14      12961      222477 Rossetti                       7      308.7
+25-JAN-14      12900      226656 Randall                      145       1625
+26-JAN-14      12901      259906 Capybara                      50       2450
+28-JAN-14      12962      267780 Shelly                         8      299.7
+12-FEB-14      12812      227105 Kafka                          1      26.99
+12-FEB-14      13142      227105 Kafka                          1      26.99
+12-FEB-14      12911      221297 Dodgson                        6     171.86
+15-FEB-14      13145      222477 Rossetti                       3      84.25
+15-FEB-14      12914      272787 Carlson                       23        276
+15-FEB-14      13144      290298 Swift                          1      45.99
+15-FEB-14      12814      290298 Swift                          1      45.99
+20-FEB-14      12936      258595 Jobs                           2         25
+01-MAR-14      13840      267780 Shelly                         2         24
+02-MAR-14      13850      234138 Keats                          1      40.49
+02-MAR-14      13841      272787 Carlson                       50       1250
+03-MAR-14      14007      276381 Collins                       50       1250
+04-MAR-14      13001      282716 Biederbecke                    6        180
+08-MAR-14      14003      200368 Blake                          5        225
+08-MAR-14      13224      218709 Bonnard                        8     441.52
+08-MAR-14      13852      261502 Hawthorne                      1      40.49
+08-MAR-14      14002      234138 Keats                         23        581
+12-MAR-14      13007      272787 Carlson                        4     161.19
+12-MAR-14      13002      282716 Biederbecke                    6     237.13
+13-MAR-14      13005      282716 Biederbecke                    2      51.95
+13-MAR-14      13006      272787 Carlson                        2      51.95
+20-MAR-14      15013      282716 Biederbecke                  149       6794
+21-MAR-14      15014      282716 Biederbecke                   20      519.5
+22-MAR-14      15009      282716 Biederbecke                    5        195
+22-MAR-14      15022      282716 Biederbecke                    1     199.95
+23-MAR-14      15025      282716 Biederbecke                  397        944
+23-MAR-14      15023      282716 Biederbecke                    5        460
+23-MAR-14      15008      282716 Biederbecke                    7        189
+24-MAR-14      15034      282716 Biederbecke                    3      61.89
+25-MAR-14      15035      282716 Biederbecke                    2        180
+26-MAR-14      15040      282716 Biederbecke                    2      51.95
+26-MAR-14      15017      282716 Biederbecke                    1          4
+
+38 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 06 */
+SQL> with PREVYEAR_CUSTER_ORDERS as
+  2          (
+  3          select
+  4                  ORH.CUST_ID
+  5                  , count(ORH.ORDER_ID) as NUMBER_OF_ORDERS
+  6          from
+  7                  BK_ORDER_HEADERS ORH
+  8          where
+  9                  extract(year from ORH.ORDER_DATE) = extract(year from sysdate) - 1
+ 10          group by
+ 11                  ORH.CUST_ID
+ 12          )
+ 13  select
+ 14          CUS.CUST_ID
+ 15          , CUS.CUST_NAME_LAST
+ 16  from
+ 17          BK_CUSTOMERS CUS
+ 18  where
+ 19          CUS.CUST_ID in
+ 20                  (
+ 21                  select
+ 22                          PCO.CUST_ID
+ 23                  from
+ 24                          PREVYEAR_CUSTER_ORDERS PCO
+ 25                  where
+ 26                          PCO.NUMBER_OF_ORDERS between 3 and 5
+ 27                  )
+ 28  order by
+ 29          CUS.CUST_ID
+ 30  ;
+
+   CUST_ID CUST_NAME_LAST
+---------- --------------------
+    200368 Blake
+    211483 Carroll
+    212921 Books on Tap
+    217796 Anders
+    226656 Randall
+    234138 Keats
+    239427 Marksa
+    263119 Jones
+
+8 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 07 */
+SQL> with QUARTERLY_CUSTER_ORDERS as
+  2          (
+  3          select
+  4                  ORH.CUST_ID
+  5                  , to_char(ORH.ORDER_DATE, 'YYYY') as YEAR
+  6                  , to_char(ORH.ORDER_DATE, 'Q') as QUARTER
+  7                  , count(ORH.ORDER_ID) as NUMBER_OF_ORDERS
+  8          from
+  9                  BK_ORDER_HEADERS ORH
+ 10          group by
+ 11                  ORH.CUST_ID
+ 12                  , to_char(ORH.ORDER_DATE, 'YYYY')
+ 13                  , to_char(ORH.ORDER_DATE, 'Q')
+ 14          )
+ 15  select
+ 16          CUS.CUST_ID
+ 17          , CUS.CUST_NAME_LAST
+ 18  from
+ 19          BK_CUSTOMERS CUS
+ 20  where
+ 21          exists
+ 22                  (
+ 23                  select
+ 24                          1
+ 25                  from
+ 26                          QUARTERLY_CUSTER_ORDERS PYQCO
+ 27                  where
+ 28                          PYQCO.YEAR = to_char(extract(year from sysdate) - 1)
+ 29                          and PYQCO.QUARTER = '1'
+ 30                          and PYQCO.CUST_ID = CUS.CUST_ID
+ 31                          and exists
+ 32                                  (
+ 33                                  select
+ 34                                          2
+ 35                                  from
+ 36                                          QUARTERLY_CUSTER_ORDERS CYQCO
+ 37                                  where
+ 38                                          CYQCO.YEAR = to_char(sysdate, 'YYYY')
+ 39                                          and CYQCO.QUARTER = '1'
+ 40                                          and CYQCO.CUST_ID = PYQCO.CUST_ID
+ 41                                          and PYQCO.NUMBER_OF_ORDERS >= PYQCO.NUMBER_OF_ORDERS
+ 42                                  )
+ 43                  )
+ 44  order by
+ 45          CUS.CUST_ID
+ 46  ;
+
+   CUST_ID CUST_NAME_LAST
+---------- --------------------
+    200368 Blake
+    218709 Bonnard
+    221297 Dodgson
+    222477 Rossetti
+    227105 Kafka
+    234138 Keats
+    261502 Hawthorne
+    267780 Shelly
+    272787 Carlson
+    276381 Collins
+    290298 Swift
+
+11 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

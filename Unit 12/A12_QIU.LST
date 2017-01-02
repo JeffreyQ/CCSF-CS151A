@@ -1,0 +1,565 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> Column Title format A25 truncated
+SQL> Column "Book_Title" format A25 truncated
+SQL> 
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         22-NOV-15
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          row_number () over (order by LIST_PRICE) as "ListPrice Order"
+  3          , BOOK_ID as "Book ID"
+  4          , TITLE as "Book_Title"
+  5          , PUBL_ID as "Publ"
+  6          , to_char(LIST_PRICE, '999.99') as "Price"
+  7  from
+  8          BK_BOOKS
+  9  order by
+ 10          LIST_PRICE
+ 11  ;
+
+ListPrice Order    Book ID Book_Title                      Publ Price
+--------------- ---------- ------------------------- ---------- -------
+              1       2029 The Forgotten Bird Strike       9030    1.99
+              2       1602 Goblin Market and Other P       9022    2.95
+              3       1625 Winter Weed Finder: A Gui       9021    4.95
+              4       1305 Journeys Through Flatland       9325    9.99
+              5       1546 The Johnstown Flood             9776   10.39
+              6       1103 Selected Poems                  9456   12.00
+              7       1541 Freethinkers: A History o       9023   12.79
+              8       1545 Team of Rivals: The Polit       9776   13.96
+              9       1774 Ever Since Darwin               9902   15.95
+             10       1542 The Great Agnostic: Rober       9021   16.99
+             11       1544 The House on Diamond Hill       9024   17.76
+             12       1200 The Mismeasure of Man           9902   17.95
+             13       1234 Hen's Teeth and Horse's T       9902   17.95
+             14       1609 In the Company of Crows a       9725   18.95
+             15       1629 The Leafcutter Ants: Civi       9022   19.95
+             16       1133 Leaves of Grass                 9623   19.95
+             17       1624 Outstanding Mosses and Li       9021   19.99
+             18       1483 Programming with XML            9745   19.99
+             19       1199 SQL is Fun                             19.99
+             20       1622 Bird Sense                      9020   25.00
+             21       1107 SQL Puzzles and Answers         9745   25.00
+             22       1626 Bark: A Field Guide to Tr       9021   25.95
+             23       1357 Why Birds Sing                  9725   26.00
+             24       1543 Ties That Bind:The Story        9024   26.96
+             25       1630 The Social Conquest of Ea       9022   27.95
+             26       1425 The Singing Life of Birds       9561   28.09
+             27       1106 SQL for Smarties                9745   29.00
+             28       1537 The BedSide Book of Birds       9725   29.95
+             29       1448 Backyard Birdsong Guide:        9561   29.99
+             30       2009 SQL Server 2005 Express E       9664   29.99
+             31       2623 Hornworts and Liverworts        9021   29.99
+             32       1525 Interface-Oriented Design       9725   29.99
+             33       1619 The Oject-Oriented Though       9725   29.99
+             34       1621 The Unfeathered Bird            9020   31.29
+             35       1628 The Superorganism:The Bea       9902   34.65
+             36       1175 MySQL in a Nutshell             9822   34.99
+             37       1162 Trees and Hierarchies           9745   35.00
+             38       1161 SQL Programming Style           9745   35.00
+             39       1108 Database Systems                9325   39.95
+             40       1894 Programming Visual Basic        9822   39.99
+             41       2002 SQL Server 2005 A Beginne       9030   39.99
+             42       2027 Mastering Oracle SQL and        9444   39.99
+             43       1077 Programming for Poets           9456   40.25
+             44       1279 Data-Driven Services with       9822   44.99
+             45       1478 Beginning OO Programming        9444   44.99
+             46       1278 Beginning VB 2008 Databas       9444   44.99
+             47       2006 T_SQL Programming (Inside       9000   44.99
+             48       1948 Framework Design Guidelin       9325   44.99
+             49       2007 T_SQL Querying (Inside se       9000   44.99
+             50       1104 Sibley Guide to Bird Life       9102   45.00
+             51       1128 Temporal Data and the Rel       9325   49.95
+             52       1102 Practical Standards for V       9000   49.99
+             53       1180 MySQL Database Design and       9825   49.99
+             54       1182 MySQL Cookbook                  9822   49.99
+             55       1185 MySQL Stored Procedures         9822   49.99
+             56       1184 MySQL Developer's Library       9325   49.99
+             57       1302 ADO: the ebook                  9000   49.99
+             58       1188 SQL for MySQL Developers        9325   49.99
+             59       2001 Programming SQL Server 20       9822   49.99
+             60       2003 SQL Server 2005 Developer       9030   49.99
+             61       1258 .Net Development for Micr       9000   49.99
+             62       1678 Pro .NET 2.0 Windows Form       9444   49.99
+             63       1776 Doing Objects in Visual B       9325   49.99
+             64       1835 Data Binding with Windows       9325   49.99
+             65       1670 Applied .NET Framework Pr       9000   49.99
+             66       1877 High Performance MySQL          9822   49.99
+             67       2017 Functional Programming          9528   49.99
+             68       2018 Oracle Database 11g SQL         9030   49.99
+             69       1245 A Scientific Approach to        9902   52.95
+             70       1401 Visual Studio Tools for O       9325   54.99
+             71       2032 Oracle and the rest of th       9030   55.99
+             72       1110 Adv SQL:1999 Object_Relat       9745   59.95
+             73       1105 SQL:1999 Relational Langu       9745   59.95
+             74       1301 ADO and Oracle Workbook         9000   59.99
+             75       1303 Rainbows and Rainbows           9521   59.99
+             76       1101 Programming SQL Server wi       9000   59.99
+             77       2028 Mastering Oracle Database       9444   59.99
+             78       2025 Oracle SQL Fundamentals I       9030   59.99
+             79       1979 Pro VB 2008 and the .NET        9444   59.99
+             80       1689 Programming Visual Basic        9000   59.99
+             81       2008 SQL Server 2005 T_Sql Rec       9444   59.99
+             82       2005 Developer's Guide to SQL        9325   59.99
+             83       2004 SQL Server 2005 Stored Pr       9030   59.99
+             84       1304 Stories of Discoveries          9325   59.99
+             85       1269 Querying XML                    9745   63.95
+             86       1677 Windows Forms 2.0 Program       9325   74.99
+             87       1457 Visual Basic 2008 Recipes       9444   79.99
+             88       1109 Intro to DB Systems-7th E       9325   80.00
+             89       2622 Outstanding Bryophytes          9021   89.99
+             90       1142 Relational Database Theor       9521   95.00
+             91       2031 Comparative SQL                 9444   99.99
+             92       1978 Acoustic Communication in       9561  103.91
+             93       1627 The Ants                        9022  120.18
+             94       1623 Lichens of North America        9021  135.00
+             95       1306 Myths of SQL                    9664  259.99
+
+95 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 02  */
+SQL> with BOOKS_PUBLD_AFTER_2005 as
+  2          (
+  3          select * from BK_BOOKS where YEAR_PUBLD >= '2005'
+  4          )
+  5  select
+  6          dense_rank () over (order by PUBL_ID, LIST_PRICE desc) as "Publ-ListPrice Order"
+  7          , PUBL_ID as "Publ"
+  8          , to_char(LIST_PRICE, '999.99') as "Price"
+  9          , BOOK_ID as "Book ID"
+ 10          , TITLE as "Book_Title"
+ 11  from
+ 12          BOOKS_PUBLD_AFTER_2005
+ 13  order by
+ 14          PUBL_ID
+ 15          , LIST_PRICE desc
+ 16  ;
+
+Publ-ListPrice Order       Publ Price      Book ID Book_Title
+-------------------- ---------- ------- ---------- -------------------------
+                   1       9000   59.99       1689 Programming Visual Basic
+                   2       9000   49.99       1258 .Net Development for Micr
+                   3       9000   44.99       2007 T_SQL Querying (Inside se
+                   3       9000   44.99       2006 T_SQL Programming (Inside
+                   4       9020   31.29       1621 The Unfeathered Bird
+                   5       9020   25.00       1622 Bird Sense
+                   6       9021   89.99       2622 Outstanding Bryophytes
+                   7       9021   29.99       2623 Hornworts and Liverworts
+                   8       9021   25.95       1626 Bark: A Field Guide to Tr
+                   9       9021   19.99       1624 Outstanding Mosses and Li
+                  10       9021   16.99       1542 The Great Agnostic: Rober
+                  11       9022   27.95       1630 The Social Conquest of Ea
+                  12       9022    2.95       1602 Goblin Market and Other P
+                  13       9024   26.96       1543 Ties That Bind:The Story
+                  14       9024   17.76       1544 The House on Diamond Hill
+                  15       9030   59.99       2025 Oracle SQL Fundamentals I
+                  15       9030   59.99       2004 SQL Server 2005 Stored Pr
+                  16       9030   55.99       2032 Oracle and the rest of th
+                  17       9030   49.99       2018 Oracle Database 11g SQL
+                  17       9030   49.99       2003 SQL Server 2005 Developer
+                  18       9030   39.99       2002 SQL Server 2005 A Beginne
+                  19       9030    1.99       2029 The Forgotten Bird Strike
+                  20       9325   74.99       1677 Windows Forms 2.0 Program
+                  21       9325   59.99       2005 Developer's Guide to SQL
+                  22       9325   54.99       1401 Visual Studio Tools for O
+                  23       9325   49.99       1776 Doing Objects in Visual B
+                  23       9325   49.99       1184 MySQL Developer's Library
+                  23       9325   49.99       1188 SQL for MySQL Developers
+                  23       9325   49.99       1835 Data Binding with Windows
+                  24       9325   44.99       1948 Framework Design Guidelin
+                  25       9444   99.99       2031 Comparative SQL
+                  26       9444   79.99       1457 Visual Basic 2008 Recipes
+                  27       9444   59.99       2028 Mastering Oracle Database
+                  27       9444   59.99       2008 SQL Server 2005 T_Sql Rec
+                  27       9444   59.99       1979 Pro VB 2008 and the .NET
+                  28       9444   49.99       1678 Pro .NET 2.0 Windows Form
+                  29       9444   44.99       1278 Beginning VB 2008 Databas
+                  29       9444   44.99       1478 Beginning OO Programming
+                  30       9444   39.99       2027 Mastering Oracle SQL and
+                  31       9456   40.25       1077 Programming for Poets
+                  32       9528   49.99       2017 Functional Programming
+                  33       9561   29.99       1448 Backyard Birdsong Guide:
+                  34       9561   28.09       1425 The Singing Life of Birds
+                  35       9664   29.99       2009 SQL Server 2005 Express E
+                  36       9725   29.99       1525 Interface-Oriented Design
+                  37       9725   29.95       1537 The BedSide Book of Birds
+                  38       9725   26.00       1357 Why Birds Sing
+                  39       9725   18.95       1609 In the Company of Crows a
+                  40       9745   63.95       1269 Querying XML
+                  41       9745   35.00       1161 SQL Programming Style
+                  42       9745   19.99       1483 Programming with XML
+                  43       9776   13.96       1545 Team of Rivals: The Polit
+                  44       9822   49.99       1877 High Performance MySQL
+                  44       9822   49.99       1182 MySQL Cookbook
+                  44       9822   49.99       1185 MySQL Stored Procedures
+                  44       9822   49.99       2001 Programming SQL Server 20
+                  45       9822   44.99       1279 Data-Driven Services with
+                  46       9822   39.99       1894 Programming Visual Basic
+                  47       9822   34.99       1175 MySQL in a Nutshell
+                  48       9825   49.99       1180 MySQL Database Design and
+                  49       9902   52.95       1245 A Scientific Approach to
+                  50       9902   34.65       1628 The Superorganism:The Bea
+                  51              19.99       1199 SQL is Fun
+
+63 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 03 */
+SQL> with BOOK_ORDER_QTY as
+  2          (
+  3          select
+  4                  BOOK_ID
+  5                  , round(sum(nvl(QUANTITY, 0)), -1) as QTY
+  6          from
+  7                  BK_ORDER_DETAILS
+  8          group by
+  9                  BOOK_ID
+ 10          )
+ 11  , BOOK_SALES as
+ 12          (
+ 13          select
+ 14                  rank () over (order by QTY desc) as SALES_RANKING
+ 15                  , BOOK_ID
+ 16                  , TITLE
+ 17                  , QTY
+ 18          from
+ 19                  BK_BOOKS
+ 20                  join BOOK_ORDER_QTY using (BOOK_ID)
+ 21          )
+ 22  select
+ 23          SALES_RANKING as "Sales Ranking"
+ 24          , BOOK_ID as "Book ID"
+ 25          , TITLE as "Book_Title"
+ 26          , to_char(QTY, '999,999') as "TotQuantSale"
+ 27  from
+ 28          BOOK_SALES
+ 29  where
+ 30          SALES_RANKING <= 15
+ 31  order by
+ 32          1
+ 33  ;
+
+Sales Ranking    Book ID Book_Title                TotQuant
+------------- ---------- ------------------------- --------
+            1       1128 Temporal Data and the Rel    1,550
+            2       2001 Programming SQL Server 20    1,010
+            3       1602 Goblin Market and Other P    1,000
+            3       1448 Backyard Birdsong Guide:     1,000
+            5       1305 Journeys Through Flatland      950
+            6       1108 Database Systems               940
+            7       1142 Relational Database Theor      840
+            8       1401 Visual Studio Tools for O      640
+            9       2025 Oracle SQL Fundamentals I      560
+           10       1103 Selected Poems                 550
+           11       1776 Doing Objects in Visual B      300
+           12       1161 SQL Programming Style          290
+           13       1162 Trees and Hierarchies          200
+           14       1619 The Oject-Oriented Though      170
+           15       1106 SQL for Smarties               140
+           15       1182 MySQL Cookbook                 140
+
+16 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 04 */
+SQL> Column "RunningSalesByCustomer" format 999,999.99
+SQL> 
+SQL> with CURRENT_YEAR_SALES as
+  2          (
+  3          select
+  4                  CUST_ID
+  5                  , to_char(ORDER_DATE, 'YYYY-MM-DD') as ORD_DATE
+  6                  , sum(nvl(QUANTITY, 0) * nvl(ORDER_PRICE, 0)) as TOTSALES
+  7          from
+  8                  BK_ORDER_HEADERS ORH
+  9                  join BK_ORDER_DETAILS ORD using (ORDER_ID)
+ 10          where
+ 11                  extract(year from ORDER_DATE) = extract(year from sysdate)
+ 12          group by
+ 13                  CUST_ID
+ 14                  , to_char(ORDER_DATE, 'YYYY-MM-DD')
+ 15          )
+ 16  select
+ 17          CUST_ID as "cust_id"
+ 18          , ORD_DATE as "order_date"
+ 19          , to_char(TOTSALES, '999,999.99') as "SalesByDay"
+ 20          , sum(TOTSALES) over (partition by CUST_ID order by ORD_DATE) as "RunningSalesByCustomer"
+ 21  from
+ 22          CURRENT_YEAR_SALES
+ 23  where
+ 24          CUST_ID < 220000
+ 25  order by
+ 26          CUST_ID
+ 27          , ORD_DATE
+ 28  ;
+
+   cust_id order_date SalesByDay  RunningSalesByCustomer
+---------- ---------- ----------- ----------------------
+    200368 2015-03-08      225.00                 225.00
+    200368 2015-03-15       55.19                 280.19
+    200368 2015-05-03    3,000.00               3,280.19
+    200368 2015-06-28    9,742.50              13,022.69
+    200368 2015-07-28    9,742.50              22,765.19
+    208950 2015-03-28      109.50                 109.50
+    208950 2015-10-28      109.50                 219.00
+    212921 2015-01-01    1,277.25               1,277.25
+    212921 2015-01-18    1,383.90               2,661.15
+    212921 2015-01-20       27.29               2,688.44
+    212921 2015-02-05       40.49               2,728.93
+    212921 2015-03-01      165.00               2,893.93
+    212921 2015-03-05       75.00               2,968.93
+    212921 2015-03-22       99.90               3,068.83
+    217796 2015-02-04       38.89                  38.89
+    217796 2015-03-10      708.75                 747.64
+    217796 2015-03-14      525.40               1,273.04
+    217796 2015-03-22    1,250.00               2,523.04
+    217796 2015-03-29    1,250.00               3,773.04
+    217796 2015-05-06      174.75               3,947.79
+    218709 2015-02-08    2,579.52               2,579.52
+    218709 2015-03-10    1,250.00               3,829.52
+    218709 2015-03-18       91.18               3,920.70
+    218709 2015-03-25      424.95               4,345.65
+
+24 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 05 */
+SQL> Column "Quantity" format 999,999
+SQL> 
+SQL> with AUTHOR_BOOK_SALES as
+  2          (
+  3          select
+  4                  AUTHOR_ID
+  5                  , BOOK_ID
+  6                  , sum(QUANTITY) as QTY
+  7                  , sum(QUANTITY * ORDER_PRICE) as TOTSALES
+  8          from
+  9                  BK_BOOK_AUTHORS
+ 10                  join BK_BOOKS using (BOOK_ID)
+ 11                  left outer join BK_ORDER_DETAILS using (BOOK_ID)
+ 12          where
+ 13                  AUTHOR_ID < 'J'
+ 14          group by
+ 15                  AUTHOR_ID
+ 16                  , BOOK_ID
+ 17          )
+ 18  select
+ 19          AUTHOR_ID as "Author ID"
+ 20          , decode(BOOK_ID, NULL, '  Total', BOOK_ID) as "Book ID"
+ 21          , sum(nvl(QTY, 0)) as "Quantity"
+ 22          , decode(sum(TOTSALES), NULL, 'No sales', to_char(sum(TOTSALES), '999,999.99')) as "Total Sales"
+ 23  from
+ 24          AUTHOR_BOOK_SALES
+ 25  group by
+ 26          rollup (AUTHOR_ID, BOOK_ID)
+ 27  ;
+
+Autho Book ID                                  Quantity Total Sales
+----- ---------------------------------------- -------- -----------
+A0094 1948                                           12      491.28
+A0094   Total                                        12      491.28
+A0110 1142                                          843   28,004.90
+A0110   Total                                       843   28,004.90
+A5748 1278                                            1       48.00
+A5748   Total                                         1       48.00
+A7745 1609                                            4       75.80
+A7745   Total                                         4       75.80
+B0056 1877                                            4      180.00
+B0056   Total                                         4      180.00
+B1112 2006                                           45      926.95
+B1112 2007                                           53    1,916.98
+B1112   Total                                        98    2,843.93
+B1144 1622                                            0 No sales
+B1144   Total                                         0 No sales
+B1244 1623                                            0 No sales
+B1244   Total                                         0 No sales
+B2010 1102                                            4      199.96
+B2010 1670                                           60    2,400.00
+B2010 1689                                           13      717.47
+B2010   Total                                        77    3,317.43
+B2078 2005                                           20      900.00
+B2078   Total                                        20      900.00
+C0030 1106                                          135    3,896.50
+C0030 1107                                          107    2,387.50
+C0030 1161                                          290    8,200.00
+C0030 1162                                          202    6,536.83
+C0030   Total                                       734   21,020.83
+C0844 1401                                          641   34,661.00
+C0844   Total                                       641   34,661.00
+C5820 1478                                            5      225.00
+C5820   Total                                         5      225.00
+C8794 1948                                           12      491.28
+C8794   Total                                        12      491.28
+D0030 1109                                           54    1,865.80
+D0030 1128                                        1,553   64,559.64
+D0030   Total                                     1,607   66,425.44
+D0050 1142                                          843   28,004.90
+D0050   Total                                       843   28,004.90
+D0845 2009                                           41    1,359.21
+D0845   Total                                        41    1,359.21
+D2110 1301                                           45    2,047.50
+D2110 1304                                          117    5,491.83
+D2110   Total                                       162    7,539.33
+D2340 1128                                        1,553   64,559.64
+D2340   Total                                     1,553   64,559.64
+D3040 1101                                           67    3,871.81
+D3040   Total                                        67    3,871.81
+D6290 2025                                          560   21,840.00
+D6290   Total                                       560   21,840.00
+D8902 1182                                          143    6,433.60
+D8902   Total                                       143    6,433.60
+D8956 1175                                            9      334.39
+D8956 1184                                            6      299.94
+D8956   Total                                        15      634.33
+F2987 1185                                            6      299.94
+F2987   Total                                         6      299.94
+G4040 2009                                           41    1,359.21
+G4040   Total                                        41    1,359.21
+G4748 1537                                           88    1,930.24
+G4748   Total                                        88    1,930.24
+G5050 1200                                           21      344.30
+G5050 1234                                            0 No sales
+G5050 1774                                            1       14.67
+G5050   Total                                        22      358.97
+G8495 1545                                            7       95.80
+G8495   Total                                         7       95.80
+H0187 1457                                           10      539.90
+H0187   Total                                        10      539.90
+H0202 1185                                            6      299.94
+H0202   Total                                         6      299.94
+H2987 2001                                        1,008   39,523.57
+H2987   Total                                     1,008   39,523.57
+H3145 1627                                            7    1,080.57
+H3145 1628                                           41    1,330.55
+H3145 1629                                           76    1,516.20
+H3145   Total                                       124    3,927.32
+H8972 1278                                            1       48.00
+H8972   Total                                         1       48.00
+I0010 1109                                           54    1,865.80
+I0010   Total                                        54    1,865.80
+I5110 2031                                            0 No sales
+I5110 2032                                            6      233.96
+I5110   Total                                         6      233.96
+        Total                                     8,815  343,410.36
+
+85 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 06 */
+SQL> /* In order to generate a calendar for 35 days, we pick up a big enough table BK_ORDER_DETAILS and use ROWNUM. */
+SQL> 
+SQL> Column "TotalSales" format 999,999.99
+SQL> 
+SQL> define START_DATE = "'2014-03-01'"
+SQL> define DAYS_IN_CAL = "35"
+SQL> 
+SQL> with CALENDAR as
+  2          (
+  3          select
+  4                  to_date(&START_DATE, 'YYYY-MM-DD') - 2 + rownum as CAL_DATE
+  5          from
+  6                  BK_ORDER_DETAILS
+  7          where
+  8                  rownum <= &DAYS_IN_CAL
+  9          )
+ 10  , DAILY_SALES_RECORDS as
+ 11          (
+ 12          select
+ 13                  CAL_DATE as ORD_DATE
+ 14                  , sum(nvl(QUANTITY, 0) * nvl(ORDER_PRICE, 0)) as TOTALSALES
+ 15          from
+ 16                  CALENDAR CAL
+ 17                  left outer join BK_ORDER_HEADERS ORH on (CAL.CAL_DATE = trunc(ORH.ORDER_DATE))
+ 18                  left outer join BK_ORDER_DETAILS ORD on (ORH.ORDER_ID = ORD.ORDER_ID)
+ 19          group by
+ 20                  CAL_DATE
+ 21          )
+ 22  select
+ 23          to_char(ORD_DATE, 'YYYY-MM-DD') as "Date"
+ 24          , TOTALSALES as "TotalSales"
+ 25          , to_char(sum(TOTALSALES) over (order by ORD_DATE rows between 2 preceding and 2 following), '999,999.99') as "5 DaySUM"
+ 26          , to_char(avg(TOTALSALES) over (order by ORD_DATE rows between 2 preceding and 2 following), '999,999.99') as "5 DayAvg"
+ 27  from
+ 28          DAILY_SALES_RECORDS
+ 29  where
+ 30          extract(month from ORD_DATE) = 3
+ 31  order by
+ 32          1
+ 33  ;
+old   4: 		to_date(&START_DATE, 'YYYY-MM-DD') - 2 + rownum as CAL_DATE
+new   4: 		to_date('2014-03-01', 'YYYY-MM-DD') - 2 + rownum as CAL_DATE
+old   8: 		rownum <= &DAYS_IN_CAL
+new   8: 		rownum <= 35
+
+Date        TotalSales 5 DaySUM    5 DayAvg
+---------- ----------- ----------- -----------
+2014-03-01       24.00    2,564.49      854.83
+2014-03-02    1,290.49    2,744.49      686.12
+2014-03-03    1,250.00    2,744.49      548.90
+2014-03-04      180.00    2,720.49      544.10
+2014-03-05         .00    1,430.00      286.00
+2014-03-06         .00    1,468.01      293.60
+2014-03-07         .00    1,288.01      257.60
+2014-03-08    1,288.01    1,288.01      257.60
+2014-03-09         .00    1,288.01      257.60
+2014-03-10         .00    1,686.33      337.27
+2014-03-11         .00      502.22      100.44
+2014-03-12      398.32      502.22      100.44
+2014-03-13      103.90      502.22      100.44
+2014-03-14         .00      502.22      100.44
+2014-03-15         .00      103.90       20.78
+2014-03-16         .00         .00         .00
+2014-03-17         .00         .00         .00
+2014-03-18         .00    6,794.00    1,358.80
+2014-03-19         .00    7,313.50    1,462.70
+2014-03-20    6,794.00    7,708.45    1,541.69
+2014-03-21      519.50    9,301.45    1,860.29
+2014-03-22      394.95    9,363.34    1,872.67
+2014-03-23    1,593.00    2,749.34      549.87
+2014-03-24       61.89    2,285.79      457.16
+2014-03-25      180.00    1,890.84      378.17
+2014-03-26       55.95      297.84       59.57
+2014-03-27         .00      235.95       47.19
+2014-03-28         .00       55.95       11.19
+2014-03-29         .00         .00         .00
+2014-03-30         .00         .00         .00
+2014-03-31         .00         .00         .00
+
+31 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

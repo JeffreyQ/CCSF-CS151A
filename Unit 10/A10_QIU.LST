@@ -1,0 +1,472 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> column TITLE format a65
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         02-NOV-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          BOK.BOOK_ID
+  3          , BOK.TITLE
+  4  from
+  5          BK_BOOKS BOK
+  6  where
+  7          BOK.BOOK_ID in
+  8                  (
+  9                  select
+ 10                          BKT.BOOK_ID
+ 11                  from
+ 12                          BK_BOOK_TOPICS BKT
+ 13                  where
+ 14                          BKT.TOPIC_ID = 'DB'
+ 15                          or BKT.TOPIC_ID = 'SQL'
+ 16                  )
+ 17          and BOK.BOOK_ID in
+ 18                  (
+ 19                  select
+ 20                          ORD.BOOK_ID
+ 21                  from
+ 22                          BK_ORDER_DETAILS ORD
+ 23                  )
+ 24  order by
+ 25          BOK.BOOK_ID
+ 26  ;
+
+   BOOK_ID TITLE
+---------- -----------------------------------------------------------------
+      1105 SQL:1999 Relational Language Concepts
+      1106 SQL for Smarties
+      1107 SQL Puzzles and Answers
+      1108 Database Systems
+      1109 Intro to DB Systems-7th Ed
+      1110 Adv SQL:1999 Object_Relational Features
+      1128 Temporal Data and the Relational Model
+      1142 Relational Database Theory
+      1161 SQL Programming Style
+      1162 Trees and Hierarchies
+      1175 MySQL in a Nutshell
+      1180 MySQL Database Design and Tuning
+      1182 MySQL Cookbook
+      1184 MySQL Developer's Library
+      1185 MySQL Stored Procedures
+      1188 SQL for MySQL Developers
+      1278 Beginning VB 2008 Databases
+      1306 Myths of SQL
+      1483 Programming with XML
+      2002 SQL Server 2005 A Beginner's Guide
+      2004 SQL Server 2005 Stored Procedure Prg
+      2005 Developer's Guide to SQL Server 2005
+      2006 T_SQL Programming (Inside series)
+      2007 T_SQL Querying (Inside series)
+      2008 SQL Server 2005 T_Sql Recipies
+      2009 SQL Server 2005 Express Edition
+      2018 Oracle Database 11g SQL
+      2025 Oracle SQL Fundamentals I Exam Guide
+      2032 Oracle and the rest of the world
+
+29 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          BOK.BOOK_ID
+  3          , BOK.TITLE
+  4  from
+  5          BK_BOOKS BOK
+  6  where
+  7          BOK.BOOK_ID in
+  8                  (
+  9                  select
+ 10                          BKT.BOOK_ID
+ 11                  from
+ 12                          BK_BOOK_TOPICS BKT
+ 13                  where
+ 14                          BKT.TOPIC_ID = 'DB'
+ 15                  )
+ 16          and BOK.BOOK_ID in
+ 17                  (
+ 18                  select
+ 19                          BKT.BOOK_ID
+ 20                  from
+ 21                          BK_BOOK_TOPICS BKT
+ 22                  where
+ 23                          BKT.TOPIC_ID = 'SQL'
+ 24                  )
+ 25          and BOK.BOOK_ID in
+ 26                  (
+ 27                  select
+ 28                          ORD.BOOK_ID
+ 29                  from
+ 30                          BK_ORDER_DETAILS ORD
+ 31                  )
+ 32  order by
+ 33          BOK.BOOK_ID
+ 34  ;
+
+   BOOK_ID TITLE
+---------- -----------------------------------------------------------------
+      1105 SQL:1999 Relational Language Concepts
+      1110 Adv SQL:1999 Object_Relational Features
+      1128 Temporal Data and the Relational Model
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select
+  2          BOK.BOOK_ID
+  3          , BOK.TITLE
+  4  from
+  5          BK_BOOKS BOK
+  6  where
+  7          BOK.BOOK_ID in
+  8                  (
+  9                  select
+ 10                          BKT.BOOK_ID
+ 11                  from
+ 12                          BK_BOOK_TOPICS BKT
+ 13                  where
+ 14                          BKT.TOPIC_ID = 'SQL'
+ 15                  )
+ 16          and BOK.BOOK_ID not in
+ 17                  (
+ 18                  select
+ 19                          BKT.BOOK_ID
+ 20                  from
+ 21                          BK_BOOK_TOPICS BKT
+ 22                  where
+ 23                          BKT.TOPIC_ID = 'DB'
+ 24                  )
+ 25          and BOK.BOOK_ID in
+ 26                  (
+ 27                  select
+ 28                          ORD.BOOK_ID
+ 29                  from
+ 30                          BK_ORDER_DETAILS ORD
+ 31                  )
+ 32  order by
+ 33          BOK.BOOK_ID
+ 34  ;
+
+   BOOK_ID TITLE
+---------- -----------------------------------------------------------------
+      1106 SQL for Smarties
+      1107 SQL Puzzles and Answers
+      1161 SQL Programming Style
+      1162 Trees and Hierarchies
+      1175 MySQL in a Nutshell
+      1182 MySQL Cookbook
+      1184 MySQL Developer's Library
+      1185 MySQL Stored Procedures
+      1188 SQL for MySQL Developers
+      1306 Myths of SQL
+      1483 Programming with XML
+      2002 SQL Server 2005 A Beginner's Guide
+      2004 SQL Server 2005 Stored Procedure Prg
+      2005 Developer's Guide to SQL Server 2005
+      2006 T_SQL Programming (Inside series)
+      2007 T_SQL Querying (Inside series)
+      2008 SQL Server 2005 T_Sql Recipies
+      2009 SQL Server 2005 Express Edition
+      2018 Oracle Database 11g SQL
+      2025 Oracle SQL Fundamentals I Exam Guide
+
+20 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> /*
+SQL>         Assume that each order contains only one record in BK_ORDER_DETAILS table for a single book.
+SQL>         I.e. the same book in a single order cannot be recorded as 2 separate line items.
+SQL>  */
+SQL> with BOOK_SALES as
+  2          (
+  3          select
+  4                  ORD.BOOK_ID as BOOK_ID
+  5                  , sum(nvl(ORD.QUANTITY, 0) * nvl(ORD.ORDER_PRICE, 0.0)) as TOTAL_SALES
+  6          from
+  7                  BK_ORDER_DETAILS ORD
+  8          group by
+  9                  ORD.BOOK_ID
+ 10          )
+ 11  select
+ 12          BOK.BOOK_ID
+ 13          , BOK.TITLE
+ 14          , BOK.YEAR_PUBLD
+ 15          , (
+ 16                  select
+ 17                          max(TOTAL_SALES)
+ 18                  from
+ 19                          BOOK_SALES
+ 20            ) as LARGEST_SALES_AMOUNT
+ 21  from
+ 22          BK_BOOKS BOK
+ 23  where
+ 24          BOK.BOOK_ID in
+ 25                  (
+ 26                  select
+ 27                          BOS.BOOK_ID
+ 28                  from
+ 29                          BOOK_SALES BOS
+ 30                  where
+ 31                          BOS.TOTAL_SALES =
+ 32                                  (
+ 33                                  select
+ 34                                          max(TOTAL_SALES)
+ 35                                  from
+ 36                                          BOOK_SALES
+ 37                                  )
+ 38                  )
+ 39  order by
+ 40          BOK.BOOK_ID
+ 41  ;
+
+   BOOK_ID TITLE                                                             YEAR_PUBLD LARGEST_SALES_AMOUNT
+---------- ----------------------------------------------------------------- ---------- --------------------
+      1128 Temporal Data and the Relational Model                                  2003             64559.64
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select
+  2          CUS.CUST_ID
+  3          , CUS.CUST_NAME_LAST
+  4  from
+  5          BK_CUSTOMERS CUS
+  6  where
+  7          CUS.CUST_ID in
+  8                  (
+  9                  select
+ 10                          ORH.CUST_ID
+ 11                  from
+ 12                          BK_ORDER_HEADERS ORH
+ 13                  where
+ 14                          ORH.ORDER_ID in
+ 15                                  (
+ 16                                  select
+ 17                                          ORD.ORDER_ID
+ 18                                  from
+ 19                                          BK_ORDER_DETAILS ORD
+ 20                                  where
+ 21                                          ORD.BOOK_ID in
+ 22                                                  (
+ 23                                                  select
+ 24                                                          BKT.BOOK_ID
+ 25                                                  from
+ 26                                                          BK_BOOK_TOPICS BKT
+ 27                                                  where
+ 28                                                          BKT.TOPIC_ID = 'ART'
+ 29                                                  )
+ 30                                  )
+ 31                  )
+ 32  order by
+ 33          CUS.CUST_ID
+ 34  ;
+
+no rows selected
+
+SQL> 
+SQL> select
+  2          CUS.CUST_ID
+  3          , CUS.CUST_NAME_LAST
+  4  from
+  5          BK_CUSTOMERS CUS
+  6  where
+  7          CUS.CUST_ID in
+  8                  (
+  9                  select
+ 10                          ORH.CUST_ID
+ 11                  from
+ 12                          BK_ORDER_HEADERS ORH
+ 13                  where
+ 14                          ORH.ORDER_ID in
+ 15                                  (
+ 16                                  select
+ 17                                          ORD.ORDER_ID
+ 18                                  from
+ 19                                          BK_ORDER_DETAILS ORD
+ 20                                  where
+ 21                                          ORD.BOOK_ID in
+ 22                                                  (
+ 23                                                  select
+ 24                                                          BKT.BOOK_ID
+ 25                                                  from
+ 26                                                          BK_BOOK_TOPICS BKT
+ 27                                                  where
+ 28                                                          BKT.TOPIC_ID = 'HIST'
+ 29                                                  )
+ 30                                  )
+ 31                  )
+ 32  order by
+ 33          CUS.CUST_ID
+ 34  ;
+
+   CUST_ID CUST_NAME_LAST
+---------- --------------------
+    212921 Books on Tap
+    217796 Anders
+    218709 Bonnard
+    234138 Keats
+    272611 Jarrett
+    276381 Collins
+
+6 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> with BOOK_COPYSOLD as
+  2          (
+  3          select
+  4                  ORD.BOOK_ID as BOOK_ID
+  5                  , sum(nvl(ORD.QUANTITY, 0)) as COPY_SOLD
+  6          from
+  7                  BK_ORDER_DETAILS ORD
+  8          group by
+  9                  ORD.BOOK_ID
+ 10          )
+ 11  select
+ 12          BOK.BOOK_ID
+ 13          , BOK.TITLE
+ 14  from
+ 15          BK_BOOKS BOK
+ 16  where
+ 17          BOK.BOOK_ID in
+ 18                  (
+ 19                  select
+ 20                          BCS.BOOK_ID
+ 21                  from
+ 22                          BOOK_COPYSOLD BCS
+ 23                  where
+ 24                          BCS.COPY_SOLD > 500
+ 25                  )
+ 26  order by
+ 27          BOK.BOOK_ID
+ 28  ;
+
+   BOOK_ID TITLE
+---------- -----------------------------------------------------------------
+      1103 Selected Poems
+      1108 Database Systems
+      1128 Temporal Data and the Relational Model
+      1142 Relational Database Theory
+      1305 Journeys Through Flatland
+      1401 Visual Studio Tools for Office
+      1448 Backyard Birdsong Guide: Western North America
+      1602 Goblin Market and Other Poems
+      2001 Programming SQL Server 2005
+      2025 Oracle SQL Fundamentals I Exam Guide
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> with ORDER_STATISTICS as
+  2  (
+  3          select
+  4                  OYM.YEAR_MONTH
+  5                  , count(OYM.ORDER_ID) as NUM_OF_ORDERS
+  6          from
+  7                  (
+  8                  select
+  9                          ORH.ORDER_ID
+ 10                          , to_char(ORH.ORDER_DATE, 'YYYY') || '.' || to_char(ORH.ORDER_DATE, 'MM') as YEAR_MONTH
+ 11                  from
+ 12                          BK_ORDER_HEADERS ORH
+ 13                  ) OYM
+ 14          group by
+ 15                  OYM.YEAR_MONTH
+ 16  )
+ 17  select
+ 18          ORS.YEAR_MONTH
+ 19  from
+ 20          ORDER_STATISTICS ORS
+ 21  where
+ 22          ORS.NUM_OF_ORDERS =
+ 23                  (
+ 24                  select
+ 25                          min(NUM_OF_ORDERS)
+ 26                  from
+ 27                          ORDER_STATISTICS
+ 28                  )
+ 29  order by
+ 30          ORS.YEAR_MONTH DESC
+ 31  ;
+
+YEAR_MO
+-------
+2015.09
+2015.08
+2015.07
+2014.04
+
+4 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 08 */
+SQL> with ORDER_STATISTICS as
+  2  (
+  3          select
+  4                  OYM.YEAR_MONTH
+  5                  , count(OYM.ORDER_ID) as NUM_OF_ORDERS
+  6          from
+  7                  (
+  8                  select
+  9                          ORH.ORDER_ID
+ 10                          , to_char(ORH.ORDER_DATE, 'YYYY') || '.' || to_char(ORH.ORDER_DATE, 'MM') as YEAR_MONTH
+ 11                  from
+ 12                          BK_ORDER_HEADERS ORH
+ 13                  ) OYM
+ 14          group by
+ 15                  OYM.YEAR_MONTH
+ 16  )
+ 17  select
+ 18          ORS.YEAR_MONTH
+ 19  from
+ 20          ORDER_STATISTICS ORS
+ 21  where
+ 22          ORS.NUM_OF_ORDERS =
+ 23                  (
+ 24                  select
+ 25                          max(NUM_OF_ORDERS)
+ 26                  from
+ 27                          ORDER_STATISTICS
+ 28                  )
+ 29  order by
+ 30          ORS.YEAR_MONTH DESC
+ 31  ;
+
+YEAR_MO
+-------
+2015.03
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

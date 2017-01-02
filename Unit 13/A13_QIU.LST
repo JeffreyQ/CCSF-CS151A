@@ -1,0 +1,394 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> column line format 999
+SQL> column text format a70
+SQL> column text wrapped
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /* function source code */
+SQL> create or replace function booksize
+  2          (
+  3          SIZE_IN integer
+  4          )
+  5  return varchar
+  6  as
+  7          V_MSG varchar(100);
+  8  begin
+  9  
+ 10          if SIZE_IN is null then
+ 11                  V_MSG := 'Input value is missing';
+ 12          elsif SIZE_IN <= 0 then
+ 13                  V_MSG := 'Input value must be a strictly positive value';
+ 14          elsif SIZE_IN between 1 and 200 then
+ 15                  V_MSG := 'Short';
+ 16          elsif SIZE_IN between 201 and 500 then
+ 17                  V_MSG := 'Medium';
+ 18          elsif SIZE_IN between 501 and 1200 then
+ 19                  V_MSG := 'Long';
+ 20          elsif SIZE_IN between 1201 and 4000 then
+ 21                  V_MSG := 'ExtraLong';
+ 22          else    -- SIZE_IN > 4000
+ 23                  V_MSG := 'SuperLong';
+ 24          end if;
+ 25          return V_MSG;
+ 26  
+ 27  end booksize;
+ 28  /
+
+Function created.
+
+SQL> 
+SQL> 
+SQL> /* function source code */
+SQL> create or replace function PrevMonth
+  2          (
+  3          IN_DATE date
+  4          , IN_MN_ADJUST integer
+  5          )
+  6  return varchar
+  7  as
+  8          V_TMP_DATE date;
+  9  begin
+ 10  
+ 11          if IN_DATE is null then
+ 12                  V_TMP_DATE := sysdate;
+ 13          else
+ 14                  V_TMP_DATE := IN_DATE;
+ 15          end if;
+ 16  
+ 17          if IN_MN_ADJUST is null or IN_MN_ADJUST < 0 then
+ 18                  return '';
+ 19          end if;
+ 20  
+ 21          V_TMP_DATE := add_months(V_TMP_DATE, -1 * IN_MN_ADJUST);
+ 22  
+ 23          return to_char(V_TMP_DATE, 'YYYY-MM');
+ 24  
+ 25  end PrevMonth;
+ 26  /
+
+Function created.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         06-DEC-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> column actual format a30
+SQL> column expected format a30
+SQL> 
+SQL> with MY_TEST_DATA as
+  2          (
+  3          select 1 as testrun, -1 as PageCount, 'Input value must be a strictly positive value' as expected from dual
+  4          union all
+  5          select 2 as testrun, 0 as PageCount, 'Input value must be a strictly positive value' as expected from dual
+  6          union all
+  7          select 3 as testrun, 1 as PageCount, 'Short' as expected from dual
+  8          union all
+  9          select 4 as testrun, 199 as PageCount, 'Short' as expected from dual
+ 10          union all
+ 11          select 5 as testrun, 200 as PageCount, 'Short' as expected from dual
+ 12          union all
+ 13          select 6 as testrun, 201 as PageCount, 'Medium' as expected from dual
+ 14          union all
+ 15          select 7 as testrun, 325 as PageCount, 'Medium' as expected from dual
+ 16          union all
+ 17          select 8 as testrun, 500 as PageCount, 'Medium' as expected from dual
+ 18          union all
+ 19          select 9 as testrun, 501 as PageCount, 'Long' as expected from dual
+ 20          union all
+ 21          select 10 as testrun, 999 as PageCount, 'Long' as expected from dual
+ 22          union all
+ 23          select 11 as testrun, 1200 as PageCount, 'Long' as expected from dual
+ 24          union all
+ 25          select 12 as testrun, 1201 as PageCount, 'ExtraLong' as expected from dual
+ 26          union all
+ 27          select 13 as testrun, 1250 as PageCount, 'ExtraLong' as expected from dual
+ 28          union all
+ 29          select 15 as testrun, 4000 as PageCount, 'ExtraLong' as expected from dual
+ 30          union all
+ 31          select 16 as testrun, 4001 as PageCount, 'SuperLong' as expected from dual
+ 32          union all
+ 33          select 17 as testrun, 13009 as PageCount, 'SuperLong' as expected from dual
+ 34          union all
+ 35          select 18 as testrun, null as PageCount, 'Input value is missing' as expected from dual
+ 36          )
+ 37  select
+ 38          testrun
+ 39          , PageCount
+ 40          , booksize(PageCount) as actual
+ 41          , expected
+ 42  from
+ 43          MY_TEST_DATA
+ 44  order by
+ 45          testrun
+ 46  ;
+
+   TESTRUN  PAGECOUNT ACTUAL                         EXPECTED
+---------- ---------- ------------------------------ ------------------------------
+         1         -1 Input value must be a strictly Input value must be a strictly
+                       positive value                 positive value
+
+         2          0 Input value must be a strictly Input value must be a strictly
+                       positive value                 positive value
+
+         3          1 Short                          Short
+         4        199 Short                          Short
+         5        200 Short                          Short
+         6        201 Medium                         Medium
+         7        325 Medium                         Medium
+         8        500 Medium                         Medium
+         9        501 Long                           Long
+        10        999 Long                           Long
+        11       1200 Long                           Long
+        12       1201 ExtraLong                      ExtraLong
+        13       1250 ExtraLong                      ExtraLong
+        15       4000 ExtraLong                      ExtraLong
+        16       4001 SuperLong                      SuperLong
+        17      13009 SuperLong                      SuperLong
+        18            Input value is missing         Input value is missing
+
+17 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> with MY_TEST_DATA as
+  2          (
+  3          select 1 as testrun, NULL as ddate_in, -1 as month_in, '' as expected from dual
+  4          union all
+  5          select 2 as testrun, NULL as ddate_in, NULL as month_in, '' as expected from dual
+  6          union all
+  7          select 3 as testrun, NULL as ddate_in, 0 as month_in, '2015-12' as expected from dual
+  8          union all
+  9          select 4 as testrun, DATE '2012-04-01' as ddate_in, NULL as month_in, '' as expected from dual
+ 10          union all
+ 11          select 5 as testrun, DATE '2012-04-01' as ddate_in, 0 as month_in, '2012-04' as expected from dual
+ 12          union all
+ 13          select 6 as testrun, DATE '2012-04-01' as ddate_in, 1 as month_in, '2012-03' as expected from dual
+ 14          union all
+ 15          select 7 as testrun, DATE '2012-04-30' as ddate_in, 6 as month_in, '2011-10' as expected from dual
+ 16          union all
+ 17          select 8 as testrun, DATE '2012-04-30' as ddate_in, 12 as month_in, '2011-04' as expected from dual
+ 18          union all
+ 19          select 9 as testrun, DATE '2012-04-30' as ddate_in, 13 as month_in, '2011-03' as expected from dual
+ 20          union all
+ 21          select 10 as testrun, DATE '2012-04-19' as ddate_in, NULL as month_in, NULL as expected from dual
+ 22          union all
+ 23          select 11 as testrun, DATE '2012-04-19' as ddate_in, -25 as month_in, NULL as expected from dual
+ 24          )
+ 25  , MY_TEST_VIEW as
+ 26          (
+ 27          select
+ 28                  testrun
+ 29                  , ddate_in
+ 30                  , month_in
+ 31                  , expected
+ 32                  , PrevMonth(ddate_in, month_in) as actual
+ 33          from
+ 34                  MY_TEST_DATA
+ 35          )
+ 36  select
+ 37          testrun
+ 38          , to_char(ddate_in, 'YYYY-MM-DD') as date_in
+ 39          , month_in
+ 40          , actual
+ 41          , expected
+ 42          , decode(actual, expected, 'pass', '***FAIL***') as status
+ 43  from
+ 44          MY_TEST_VIEW
+ 45  order by
+ 46          testrun
+ 47  ;
+
+   TESTRUN DATE_IN      MONTH_IN ACTUAL                         EXPECTED                       STATUS
+---------- ---------- ---------- ------------------------------ ------------------------------ ----------
+         1                    -1                                                               pass
+         2                                                                                     pass
+         3                     0 2015-12                        2015-12                        pass
+         4 2012-04-01                                                                          pass
+         5 2012-04-01          0 2012-04                        2012-04                        pass
+         6 2012-04-01          1 2012-03                        2012-03                        pass
+         7 2012-04-30          6 2011-10                        2011-10                        pass
+         8 2012-04-30         12 2011-04                        2011-04                        pass
+         9 2012-04-30         13 2011-03                        2011-03                        pass
+        10 2012-04-19                                                                          pass
+        11 2012-04-19        -25                                                               pass
+
+11 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> column booksize format a50
+SQL> 
+SQL> with IDX_ORDER as
+  2          (
+  3          select 1 as IDX, 'Short' as BOOKSIZE from dual
+  4          union all
+  5          select 2 as IDX, 'Medium' as BOOKSIZE from dual
+  6          union all
+  7          select 3 as IDX, 'Long' as BOOKSIZE from dual
+  8          union all
+  9          select 4 as IDX, 'ExtraLong' as BOOKSIZE from dual
+ 10          union all
+ 11          select 5 as IDX, 'SuperLong' as BOOKSIZE from dual
+ 12          )
+ 13  , BOOKSIZE_COUNT as
+ 14          (
+ 15          select
+ 16                  BOOK_ID
+ 17                  , booksize(page_count) as booksize
+ 18          from
+ 19                  BK_BOOKS
+ 20          )
+ 21  , TMP_RESULT as
+ 22          (
+ 23          select
+ 24                  IDX
+ 25                  , BOOKSIZE
+ 26                  , count(BOOK_ID) as NUMBOOKS
+ 27          from
+ 28                  IDX_ORDER
+ 29                  join BOOKSIZE_COUNT using (BOOKSIZE)
+ 30          group by
+ 31                  IDX
+ 32                  , BOOKSIZE
+ 33          order by
+ 34                  IDX
+ 35          )
+ 36  select
+ 37          BOOKSIZE
+ 38          , NUMBOOKS
+ 39  from
+ 40          TMP_RESULT
+ 41  ;
+
+BOOKSIZE                                             NUMBOOKS
+-------------------------------------------------- ----------
+Short                                                      14
+Medium                                                     43
+Long                                                       32
+ExtraLong                                                   3
+
+4 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 04 */
+SQL> column booksize format a50
+SQL> 
+SQL> with IDX_ORDER as
+  2          (
+  3          select 1 as IDX, 'Short' as BOOKSIZE from dual
+  4          union all
+  5          select 2 as IDX, 'Medium' as BOOKSIZE from dual
+  6          union all
+  7          select 3 as IDX, 'Long' as BOOKSIZE from dual
+  8          union all
+  9          select 4 as IDX, 'ExtraLong' as BOOKSIZE from dual
+ 10          union all
+ 11          select 5 as IDX, 'SuperLong' as BOOKSIZE from dual
+ 12          )
+ 13  , BOOKSIZE_COUNT as
+ 14          (
+ 15          select
+ 16                  BOOK_ID
+ 17                  , booksize(page_count) as booksize
+ 18          from
+ 19                  BK_BOOKS
+ 20          )
+ 21  , TMP_RESULT as
+ 22          (
+ 23          select
+ 24                  IDX
+ 25                  , BOOKSIZE
+ 26                  , count(BOOK_ID) as NUMBOOKS
+ 27          from
+ 28                  IDX_ORDER
+ 29                  left outer join BOOKSIZE_COUNT using (BOOKSIZE)
+ 30          group by
+ 31                  IDX
+ 32                  , BOOKSIZE
+ 33          order by
+ 34                  IDX
+ 35          )
+ 36  select
+ 37          BOOKSIZE
+ 38          , NUMBOOKS
+ 39  from
+ 40          TMP_RESULT
+ 41  ;
+
+BOOKSIZE                                             NUMBOOKS
+-------------------------------------------------- ----------
+Short                                                      14
+Medium                                                     43
+Long                                                       32
+ExtraLong                                                   3
+SuperLong                                                   0
+
+5 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> with ORDER_IN_PREV2MONTHS as
+  2          (
+  3          select
+  4                  ORDER_ID
+  5                  , CUST_ID
+  6          from
+  7                  BK_ORDER_HEADERS
+  8          where
+  9                  to_char(ORDER_DATE, 'YYYY-MM') between PrevMonth(sysdate, 2) and to_char(sysdate, 'YYYY-MM')
+ 10          )
+ 11  , TTL_ORDERS as
+ 12          (
+ 13          select
+ 14                  count(ORDER_ID) as NumberOrders
+ 15          from
+ 16                  ORDER_IN_PREV2MONTHS
+ 17          )
+ 18  , TTL_CUSTOMERS as
+ 19          (
+ 20          select
+ 21                  count(distinct CUST_ID) as NumberCustWithOrders
+ 22          from
+ 23                  ORDER_IN_PREV2MONTHS
+ 24          )
+ 25  select
+ 26          NumberOrders
+ 27          , NumberCustWithOrders
+ 28  from
+ 29          TTL_ORDERS
+ 30          cross join TTL_CUSTOMERS
+ 31  ;
+
+NUMBERORDERS NUMBERCUSTWITHORDERS
+------------ --------------------
+           5                    3
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> spool off

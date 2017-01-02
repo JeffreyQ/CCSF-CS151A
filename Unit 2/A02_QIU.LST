@@ -1,0 +1,321 @@
+SQL> 
+SQL> set echo on
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual
+  3  ;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         01-SEP-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select STF_NAME_FIRST, STF_NAME_LAST, STF_JOB_TITLE
+  2  from VT_STAFF
+  3  ;
+
+STF_NAME_FIRST            STF_NAME_LAST             STF_JOB_TITLE
+------------------------- ------------------------- -------------------------
+Marcin                    Wasilewski                vet
+Eliza                     Dolittle                  vet
+Shirley                   Horn                      clerical
+Bridgette                 Wilkommen                 vet
+Sandy                     Helfen                    vet assnt
+Pat                       Halvers                   kennel
+Brenda                    Webster                   vet assnt
+Rhoda                     Wabich                    vet
+Dexter                    Gordon                    vet assnt
+Sandy                     Helfen                    vet assnt
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select AN_ID as "ID", AN_NAME as "Name", AN_TYPE as "Animal Type", AN_DOB as "BirthDate"
+  2  from VT_ANIMALS
+  3  order by AN_DOB asc
+  4  ;
+
+        ID Name                      Animal Type               BirthDate
+---------- ------------------------- ------------------------- ---------
+     12035 Mr Peanut                 bird                      28-FEB-95
+     15401 Pinkie                    lizard                    15-MAR-98
+     21002 Edger                     hedgehog                  02-OCT-02
+     21003 Calvin Coolidge           dog                       18-JUN-04
+     11029                           bird                      01-OCT-05
+     15165 Burgess                   dog                       20-NOV-05
+     16004 Napper                    cat                       06-JUN-06
+     15001 Big Mike                  chelonian                 02-FEB-08
+     15002 George                    chelonian                 02-FEB-08
+     19845 Pinkie                    dog                       02-FEB-09
+     17025 25                        lizard                    10-JAN-10
+     17026 3P#_26                    lizard                    10-JAN-10
+     17027 3P#_25                    lizard                    10-JAN-10
+     10002 Gutsy                     cat                       15-APR-10
+     16002 Fritz                     porcupine                 25-MAY-10
+     21316 Etta                      cat                       11-JUN-10
+     21007                           snake                     12-JUN-10
+     21004 Gutsy                     snake                     12-MAY-11
+     21006 Koshka                    hamster                   06-JUN-11
+     21317 Manfried                  cat                       11-JUN-11
+     21314 Adalwine                  cat                       11-JUN-11
+     11025                           bird                      01-FEB-12
+     11015 Kenny                     bird                      23-FEB-12
+     12038 Gutsy                     porcupine                 29-APR-12
+     17002 Fritzchen                 porcupine                 02-JUN-12
+     21315 Baldric                   cat                       11-JUN-12
+     21318 Waldrom                   cat                       11-JUN-12
+     21001 Yoggie                    hedgehog                  22-JAN-13
+     16003 Ursula                    cat                       06-FEB-13
+     21005 Koshka                    dormouse                  30-MAR-13
+     21321 Morton                    olinguito                 03-JUN-14
+     16044 Triton                    dog                       06-JUN-14
+     16043 Ursula                    dog                       06-JUN-14
+     21320 Morris                    olinguito                 11-JUN-14
+     21305 Spot                      dog                       27-JUL-14
+     21306 Shadow                    dog                       27-JUL-14
+     21307 Buddy                     dog                       27-JUL-14
+     21205 Manfried                  dog                       30-MAR-15
+
+38 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select distinct AN_TYPE
+  2  from VT_ANIMAL_TYPES
+  3  ;
+
+AN_TYPE
+-------------------------
+bird
+capybara
+cat
+chelonian
+crocodilian
+dog
+dormouse
+hamster
+hedgehog
+lizard
+olinguito
+porcupine
+snake
+
+13 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> select SRV_TYPE, SRV_DESC
+  2  from VT_SERVICES
+  3  order by SRV_TYPE, SRV_LIST_PRICE
+  4  ;
+
+SRV_TYPE                  SRV_DESC
+------------------------- --------------------------------------------------
+medicine                  Second Feline PCR
+medicine                  Third Feline PCR
+medicine                  Buprenex oral drops 1 ml
+medicine                  Preds-chicken
+medicine                  Preds-liver
+medicine                  First Feline PCR
+medicine                  Vitamin E- Concentrated
+medicine                  Feline PCR Series
+medicine                  antibiotics
+medicine                  Scaly Mite Powder
+office visit              Followup Exam-Small Mammal
+office visit              Followup Exam-Reptile
+office visit              Followup Exam-Bird
+office visit              Followup Exam-Canine
+office visit              Followup Exam-Feline
+office visit              Routine Exam-Reptile
+office visit              Routine Exam-Small Mammal
+office visit              Routine Exam-Canine
+office visit              Routine Exam-Feline
+treatment                 Hazardous Materials Disposal
+treatment                 Intestinal Parasite Screen
+treatment                 Tooth extraction Level 2
+treatment                 Dental Cleaning-Feline
+treatment                 Hospital stay- short
+treatment                 Dental Cleaning-Canine
+treatment                 Tooth extraction Level 3
+treatment                 Routine Exam-Bird
+treatment                 Feline Dental X_ray
+treatment                 Dental Cleaning-Other
+treatment                 Dental Scaling
+treatment                 CBC and scan
+treatment                 General Anethesia 1 hour
+treatment                 Feline Behaviour Modification Consultation
+treatment                 Tooth extraction Level 1
+ 
+34 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> 
+SQL> /*
+SQL> I assume that not every row in the column EX_DESC from VT_EXAM_DETAILS is an exam.
+SQL> Only the rows that contain the word "exam" in the column EX_DESC are considered an exam.
+SQL> */
+SQL> 
+SQL> select EX_ID as "EXAM_ID", SRV_ID as "SERVICE", EX_FEE as "FEE_CHARGED"
+  2  from VT_EXAM_DETAILS
+  3  where EX_DESC like '%exam%'
+  4  ;
+
+   EXAM_ID    SERVICE FEE_CHARGED
+---------- ---------- -----------
+      3010        104          25
+      3001        104          25
+      3514        104          30
+      3306        104          30
+      3409        104          25
+      4101        104          60
+      4102        104          60
+      3325        104          25
+      3324        104          30
+      4514        104          30
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select distinct AN_NAME, AN_TYPE, AN_DOB
+  2  from VT_ANIMALS
+  3  order by AN_TYPE, AN_NAME
+  4  ;
+
+AN_NAME                   AN_TYPE                   AN_DOB
+------------------------- ------------------------- ---------
+Kenny                     bird                      23-FEB-12
+Mr Peanut                 bird                      28-FEB-95
+                          bird                      01-OCT-05
+                          bird                      01-FEB-12
+Adalwine                  cat                       11-JUN-11
+Baldric                   cat                       11-JUN-12
+Etta                      cat                       11-JUN-10
+Gutsy                     cat                       15-APR-10
+Manfried                  cat                       11-JUN-11
+Napper                    cat                       06-JUN-06
+Ursula                    cat                       06-FEB-13
+Waldrom                   cat                       11-JUN-12
+Big Mike                  chelonian                 02-FEB-08
+George                    chelonian                 02-FEB-08
+Buddy                     dog                       27-JUL-14
+Burgess                   dog                       20-NOV-05
+Calvin Coolidge           dog                       18-JUN-04
+Manfried                  dog                       30-MAR-15
+Pinkie                    dog                       02-FEB-09
+Shadow                    dog                       27-JUL-14
+Spot                      dog                       27-JUL-14
+Triton                    dog                       06-JUN-14
+Ursula                    dog                       06-JUN-14
+Koshka                    dormouse                  30-MAR-13
+Koshka                    hamster                   06-JUN-11
+Edger                     hedgehog                  02-OCT-02
+Yoggie                    hedgehog                  22-JAN-13
+25                        lizard                    10-JAN-10
+3P#_25                    lizard                    10-JAN-10
+3P#_26                    lizard                    10-JAN-10
+Pinkie                    lizard                    15-MAR-98
+Morris                    olinguito                 11-JUN-14
+Morton                    olinguito                 03-JUN-14
+Fritz                     porcupine                 25-MAY-10
+Fritzchen                 porcupine                 02-JUN-12
+Gutsy                     porcupine                 29-APR-12
+Gutsy                     snake                     12-MAY-11
+                          snake                     12-JUN-10
+
+38 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> select AN_ID as "Animal", EX_DATE as "Exam Date", STF_ID as "Staff"
+  2  from VT_EXAM_HEADERS
+  3  order by STF_ID, EX_DATE
+  4  ;
+
+    Animal Exam Date      Staff
+---------- --------- ----------
+     17027 06-NOV-14         15
+     15401 06-NOV-14         15
+     16003 10-NOV-14         15
+     19845 22-NOV-14         15
+     21001 23-NOV-14         15
+     16003 01-DEC-14         15
+     16003 23-DEC-14         15
+     21003 26-DEC-14         15
+     21005 31-DEC-14         15
+     16003 01-JAN-15         15
+     15001 02-JAN-15         15
+     15002 08-JAN-15         15
+     21317 23-JUL-15         15
+     21001 23-AUG-15         15
+     15001 22-JAN-15         25
+     15001 31-JAN-15         25
+     17025 03-OCT-14         29
+     17002 10-OCT-14         29
+     17026 22-OCT-14         29
+     17027 24-OCT-14         29
+     16002 03-NOV-14         29
+     17025 06-NOV-14         29
+     15002 10-NOV-14         29
+     16002 23-DEC-14         29
+     17027 27-DEC-14         29
+     17025 29-DEC-14         29
+     17025 30-DEC-14         29
+     17026 15-JAN-15         29
+     16002 10-FEB-15         29
+     16002 17-FEB-15         29
+     17025 25-FEB-15         29
+     16002 25-FEB-15         29
+     16002 03-AUG-15         29
+     15002 10-AUG-15         29
+     16002 03-SEP-15         29
+     16002 08-JAN-15         38
+     12035 09-JAN-15         38
+     16002 08-JUN-15         38
+     16002 08-JUL-15         38
+
+39 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> select distinct CL_STATE, CL_CITY
+  2  from VT_CLIENTS
+  3  order by CL_STATE, CL_CITY
+  4  ;
+
+CL CL_CITY
+-- -------------------------
+AR Big Rock
+CA San Diego
+CA San Francisco
+IL Springfield
+MA Boston
+MA Spring Valley
+MO Springfield
+ND Big Rock
+NM San Francisco
+NY New York
+OH Dayton
+OH Springfield
+
+12 rows selected.
+
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> spool off

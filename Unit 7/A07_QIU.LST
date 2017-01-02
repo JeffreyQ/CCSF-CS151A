@@ -1,0 +1,452 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         05-OCT-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4          , AN_ID
+  5          , AN_TYPE
+  6          , AN_NAME
+  7  from
+  8          VT_CLIENTS CLI
+  9          left outer join VT_ANIMALS ANI using (CL_ID)
+ 10  ;
+
+     CL_ID CL_NAME_LAST                   AN_ID AN_TYPE                   AN_NAME
+---------- ------------------------- ---------- ------------------------- -------------------------
+       411 Carter                         15165 dog                       Burgess
+       411 Carter                         15401 lizard                    Pinkie
+       411 Carter                         21001 hedgehog                  Yoggie
+       411 Carter                         21003 dog                       Calvin Coolidge
+       411 Carter                         19845 dog                       Pinkie
+      1825 Harris                         21002 hedgehog                  Edger
+      1825 Harris                         21006 hamster                   Koshka
+      1825 Harris                         16043 dog                       Ursula
+      1825 Harris                         16044 dog                       Triton
+      1825 Harris                         21005 dormouse                  Koshka
+      1825 Harris                         16003 cat                       Ursula
+      1825 Harris                         16002 porcupine                 Fritz
+      1852 Dalrymple                      21317 cat                       Manfried
+      1852 Dalrymple                      21315 cat                       Baldric
+      1852 Dalrymple                      21320 olinguito                 Morris
+      1852 Dalrymple                      21314 cat                       Adalwine
+      1852 Dalrymple                      21318 cat                       Waldrom
+      1852 Dalrymple                      21007 snake
+      1852 Dalrymple                      21316 cat                       Etta
+      1852 Dalrymple                      21321 olinguito                 Morton
+      3423 Hawkins
+      3560 Monk                           12038 porcupine                 Gutsy
+      3560 Monk                           10002 cat                       Gutsy
+      3560 Monk                           12035 bird                      Mr Peanut
+      4534 Montgomery                     11029 bird
+      4534 Montgomery                     11025 bird
+      4534 Montgomery                     11015 bird                      Kenny
+      5686 Biederbecke
+      5689 Biederbecke                    21205 dog                       Manfried
+      5698 Biederbecke
+      5699 Biederbecke                    21004 snake                     Gutsy
+      5699 Biederbecke                    17002 porcupine                 Fritzchen
+      5699 Biederbecke                    15001 chelonian                 Big Mike
+      5699 Biederbecke                    15002 chelonian                 George
+      5699 Biederbecke                    17025 lizard                    25
+      6897 Drake                          16004 cat                       Napper
+      7152 Brubeck                        17026 lizard                    3P#_26
+      7152 Brubeck                        17027 lizard                    3P#_25
+      7212 Davis
+     25479 Boston
+    408763 Turrentine                     21306 dog                       Shadow
+    408763 Turrentine                     21305 dog                       Spot
+    408763 Turrentine                     21307 dog                       Buddy
+
+43 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select distinct
+  2          AN_ID
+  3          , AN_TYPE
+  4          , AN_NAME
+  5          , EX_ID
+  6          , to_char(EX_DATE, 'yyyy') as EX_DATE
+  7          , SRV_ID
+  8  from
+  9          VT_ANIMALS ANI
+ 10          left outer join VT_EXAM_HEADERS EXH using (AN_ID)
+ 11          left outer join VT_EXAM_DETAILS EXD using (EX_ID)
+ 12  ;
+
+     AN_ID AN_TYPE                   AN_NAME                        EX_ID EX_D     SRV_ID
+---------- ------------------------- ------------------------- ---------- ---- ----------
+     17027 lizard                    3P#_25                          3001 2014        104
+     17002 porcupine                 Fritzchen                       3105 2014        110
+     17026 lizard                    3P#_26                          3325 2015        104
+     17026 lizard                    3P#_26                          3325 2015        604
+     19845 dog                       Pinkie                          3390 2014        101
+     21003 dog                       Calvin Coolidge                 3392 2014        398
+     16003 cat                       Ursula                          3413 2014        308
+     15002 chelonian                 George                          3514 2014        104
+     16003 cat                       Ursula                          3552 2014        308
+     16003 cat                       Ursula                          3612 2014        604
+     15001 chelonian                 Big Mike                        4101 2015        104
+     21317 cat                       Manfried                        4612 2015        612
+     21316 cat                       Etta
+     21001 hedgehog                  Yoggie                          3282 2014        523
+     17027 lizard                    3P#_25                          3304 2014        341
+     16003 cat                       Ursula                          3612 2014        602
+     15001 chelonian                 Big Mike                        4101 2015        615
+     16043 dog                       Ursula
+     16004 cat                       Napper
+     12038 porcupine                 Gutsy
+     17026 lizard                    3P#_26                          3010 2014        104
+     17002 porcupine                 Fritzchen                       3105 2014        523
+     17025 lizard                    25                              3202 2014        341
+     15001 chelonian                 Big Mike                        3288 2015       1002
+     19845 dog                       Pinkie                          3390 2014        105
+     17025 lizard                    25                              3411 2014        341
+     16003 cat                       Ursula                          3420 2015        108
+     15401 lizard                    Pinkie                          3513 2014        104
+     16003 cat                       Ursula                          3612 2014        603
+     16002 porcupine                 Fritz                           4203 2015        524
+     15002 chelonian                 George                          4514 2015        104
+     21317 cat                       Manfried                        4612 2015        606
+     21318 cat                       Waldrom
+     21306 dog                       Shadow
+     21205 dog                       Manfried
+     21007 snake
+     16044 dog                       Triton
+     10002 cat                       Gutsy
+     15001 chelonian                 Big Mike                        3288 2015        104
+     17027 lizard                    3P#_25                          3304 2014       1003
+     16002 porcupine                 Fritz                           3321 2015        748
+     17025 lizard                    25                              3324 2015       1002
+     17027 lizard                    3P#_25                          3409 2014        104
+     15401 lizard                    Pinkie                          3513 2014        110
+     15002 chelonian                 George                          3514 2014       1002
+     16003 cat                       Ursula                          3612 2014        625
+     16003 cat                       Ursula                          3612 2014        612
+     16002 porcupine                 Fritz                           4233 2015        524
+     16002 porcupine                 Fritz                           4243 2015       4601
+     21001 hedgehog                  Yoggie                          4282 2015        523
+     15002 chelonian                 George                          4514 2015       1003
+     21321 olinguito                 Morton
+     21307 dog                       Buddy
+     21006 hamster                   Koshka
+     11025 bird
+     16002 porcupine                 Fritz                           3203 2014        524
+     17025 lizard                    25                              3306 2014        687
+     16003 cat                       Ursula                          3612 2014        606
+     21001 hedgehog                  Yoggie                          4282 2015        615
+     15002 chelonian                 George                          4514 2015       1002
+     21305 dog                       Spot
+     11029 bird
+     21001 hedgehog                  Yoggie                          3282 2014        110
+     16002 porcupine                 Fritz                           3322 2015        748
+     21003 dog                       Calvin Coolidge                 3392 2014        400
+     21005 dormouse                  Koshka                          3486 2014       4601
+     21315 cat                       Baldric
+     17025 lizard                    25                              3306 2014        104
+     16002 porcupine                 Fritz                           3323 2015        524
+     16002 porcupine                 Fritz                           3323 2015        687
+     17025 lizard                    25                              3324 2015        687
+     17025 lizard                    25                              3412 2014        341
+     15002 chelonian                 George                          3514 2014       1003
+     16003 cat                       Ursula                          3612 2014        613
+     16002 porcupine                 Fritz                           4103 2015       4601
+     16002 porcupine                 Fritz                           4255 2015       4601
+     21001 hedgehog                  Yoggie                          4282 2015        110
+     21317 cat                       Manfried                        4612 2015        602
+     21002 hedgehog                  Edger
+     11015 bird                      Kenny
+     17026 lizard                    3P#_26                          3010 2014        605
+     12035 bird                      Mr Peanut                       3104 2015        106
+     12035 bird                      Mr Peanut                       3104 2015        613
+     21001 hedgehog                  Yoggie                          3282 2014        615
+     15001 chelonian                 Big Mike                        3288 2015        687
+     17025 lizard                    25                              3306 2014       1002
+     17025 lizard                    25                              3324 2015        104
+     21003 dog                       Calvin Coolidge                 3392 2014       1003
+     16002 porcupine                 Fritz                           3393 2014        748
+     16002 porcupine                 Fritz                           3393 2014        749
+     15001 chelonian                 Big Mike                        3494 2015        104
+     16003 cat                       Ursula                          3612 2014        607
+     16003 cat                       Ursula                          3612 2014        615
+     15002 chelonian                 George                          4102 2015        104
+     21317 cat                       Manfried                        4612 2015        603
+     21320 olinguito                 Morris
+     21314 cat                       Adalwine
+     21004 snake                     Gutsy
+     15165 dog                       Burgess
+
+99 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select distinct
+  2          CLI.CL_ID
+  3          , CLI.CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6  where
+  7          CLI.CL_ID in
+  8          (
+  9                  select
+ 10                          CL_ID
+ 11                  from
+ 12                          VT_ANIMALS
+ 13                  where
+ 14                          AN_TYPE not in ('snake', 'chelonian', 'crocodilian', 'lizard')
+ 15          )
+ 16  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+       411 Carter
+      1825 Harris
+      1852 Dalrymple
+      3560 Monk
+      4534 Montgomery
+      5689 Biederbecke
+      5699 Biederbecke
+      6897 Drake
+    408763 Turrentine
+
+9 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> select distinct
+  2          CLI.CL_ID
+  3          , CLI.CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6  where
+  7          CLI.CL_ID in
+  8          (
+  9                  select
+ 10                          CL_ID
+ 11                  from
+ 12                          VT_ANIMALS
+ 13                  where
+ 14                          AN_TYPE in ('snake', 'chelonian', 'crocodilian', 'lizard')
+ 15          )
+ 16          and CLI.CL_ID in
+ 17          (
+ 18                  select
+ 19                          CL_ID
+ 20                  from
+ 21                          VT_ANIMALS
+ 22                  where
+ 23                          AN_TYPE = 'bird'
+ 24          )
+ 25  ;
+
+no rows selected
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select distinct
+  2          CLI.CL_ID
+  3          , CLI.CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6  where
+  7          CLI.CL_ID not in
+  8          (
+  9                  select
+ 10                          CL_ID
+ 11                  from
+ 12                          VT_ANIMALS
+ 13                  where
+ 14                          AN_TYPE in ('snake', 'chelonian', 'crocodilian', 'lizard')
+ 15          )
+ 16          and CLI.CL_ID in
+ 17          (
+ 18                  select
+ 19                          CL_ID
+ 20                  from
+ 21                          VT_ANIMALS
+ 22                  where
+ 23                          AN_TYPE = 'bird'
+ 24          )
+ 25  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      3560 Monk
+      4534 Montgomery
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select distinct
+  2          ANI.AN_ID
+  3          , ANI.AN_NAME
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  7  where
+  8          EXH.EX_ID not in
+  9          (
+ 10                  select
+ 11                          EX_ID
+ 12                  from
+ 13                          VT_EXAM_DETAILS
+ 14                  where
+ 15                          SRV_ID in (104, 105, 106, 108)
+ 16          )
+ 17  ;
+
+     AN_ID AN_NAME
+---------- -------------------------
+     21003 Calvin Coolidge
+     16002 Fritz
+     21001 Yoggie
+     21317 Manfried
+     21005 Koshka
+     17027 3P#_25
+     17002 Fritzchen
+     17025 25
+     16003 Ursula
+
+9 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> select distinct
+  2          AN_ID
+  3          , AN_NAME
+  4          , AN_TYPE
+  5          , CL_ID
+  6  from
+  7          VT_ANIMALS
+  8  where
+  9          AN_ID in
+ 10          (
+ 11                  select AN_ID
+ 12                  from
+ 13                          VT_EXAM_HEADERS
+ 14                  where
+ 15                          to_char(EX_DATE, 'yyyy') = '2014'
+ 16          )
+ 17          and
+ 18          AN_ID in
+ 19          (
+ 20                  select AN_ID
+ 21                  from
+ 22                          VT_EXAM_HEADERS
+ 23                  where
+ 24                          to_char(EX_DATE, 'yyyy') = '2015'
+ 25          )
+ 26  ;
+
+     AN_ID AN_NAME                   AN_TYPE                        CL_ID
+---------- ------------------------- ------------------------- ----------
+     15002 George                    chelonian                       5699
+     17025 25                        lizard                          5699
+     17026 3P#_26                    lizard                          7152
+     16002 Fritz                     porcupine                       1825
+     21001 Yoggie                    hedgehog                         411
+     16003 Ursula                    cat                             1825
+
+6 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> select distinct
+  2          AN_ID
+  3          , AN_NAME
+  4          , AN_TYPE
+  5          , CL_ID
+  6  from
+  7          VT_ANIMALS
+  8  where
+  9          AN_TYPE in ('snake', 'chelonian', 'crocodilian', 'lizard')
+ 10          and AN_ID in
+ 11          (
+ 12                  select AN_ID
+ 13                  from
+ 14                          VT_EXAM_HEADERS
+ 15                  where
+ 16                          to_char(EX_DATE, 'yyyy') = to_char(add_months(sysdate, -12), 'yyyy')
+ 17          )
+ 18          and
+ 19          AN_ID not in
+ 20          (
+ 21                  select AN_ID
+ 22                  from
+ 23                          VT_EXAM_HEADERS
+ 24                  where
+ 25                          to_char(EX_DATE, 'yyyy') = to_char(sysdate, 'yyyy')
+ 26          )
+ 27  ;
+
+     AN_ID AN_NAME                   AN_TYPE                        CL_ID
+---------- ------------------------- ------------------------- ----------
+     17027 3P#_25                    lizard                          7152
+     15401 Pinkie                    lizard                           411
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 09 */
+SQL> select distinct
+  2          ANI.AN_ID
+  3          , ANI.AN_NAME
+  4          , ANI.CL_ID
+  5  from
+  6          VT_ANIMALS ANI
+  7          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  8  where
+  9          EXH.EX_ID in
+ 10          (
+ 11                  select
+ 12                          EX_ID
+ 13                  from
+ 14                          VT_EXAM_DETAILS
+ 15                  where
+ 16                          SRV_ID = 603
+ 17          )
+ 18          and EXH.EX_ID in
+ 19          (
+ 20                  select
+ 21                          EX_ID
+ 22                  from
+ 23                          VT_EXAM_DETAILS
+ 24                  where
+ 25                          SRV_ID = 606
+ 26                          or SRV_ID = 607
+ 27          )
+ 28  ;
+
+     AN_ID AN_NAME                        CL_ID
+---------- ------------------------- ----------
+     21317 Manfried                        1852
+     16003 Ursula                          1825
+
+2 rows selected.
+
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> spool off

@@ -1,0 +1,375 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         18-OCT-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> -- for animal id 16003
+SQL> select
+  2          count(EX_ID) as NumberOfExams
+  3          , nvl(sum(TotalFeesPerExam), 0.0) as TotalFees
+  4  from
+  5          (
+  6          select
+  7                  EXH.AN_ID
+  8                  , EXH.EX_ID
+  9                  , nvl(sum(EXD.EX_FEE), 0.0) as TotalFeesPerExam
+ 10          from
+ 11                  VT_EXAM_HEADERS EXH
+ 12                  join VT_EXAM_DETAILS EXD on (EXH.EX_ID = EXD.EX_ID)
+ 13          where
+ 14                  EXH.AN_ID = 16003
+ 15          group by
+ 16                  EXH.AN_ID
+ 17                  , EXH.EX_ID
+ 18          )
+ 19  ;
+
+NUMBEROFEXAMS  TOTALFEES
+------------- ----------
+            4     899.46
+
+1 row selected.
+
+SQL> 
+SQL> -- for animal id 21205
+SQL> select
+  2          count(EX_ID) as NumberOfExams
+  3          , nvl(sum(TotalFeesPerExam), 0.0) as TotalFees
+  4  from
+  5          (
+  6          select
+  7                  EXH.AN_ID
+  8                  , EXH.EX_ID
+  9                  , nvl(sum(EXD.EX_FEE), 0.0) as TotalFeesPerExam
+ 10          from
+ 11                  VT_EXAM_HEADERS EXH
+ 12                  join VT_EXAM_DETAILS EXD on (EXH.EX_ID = EXD.EX_ID)
+ 13          where
+ 14                  EXH.AN_ID = 21205
+ 15          group by
+ 16                  EXH.AN_ID
+ 17                  , EXH.EX_ID
+ 18          )
+ 19  ;
+
+NUMBEROFEXAMS  TOTALFEES
+------------- ----------
+            0          0
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          count(EXH.EX_ID) as NumberOfExams
+  3  from
+  4          VT_ANIMALS ANI
+  5          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  6  where
+  7          ANI.AN_TYPE in ('hamster', 'capybara', 'porcupine', 'dormouse')
+  8          and extract(year from EXH.EX_DATE) = extract(year from sysdate) - 1
+  9  ;
+
+NUMBEROFEXAMS
+-------------
+            4
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select
+  2          CL_ID as "Client ID"
+  3          , CL_NAME_LAST as "Client Name"
+  4          , count(AN_ID) as "Number of Animals"
+  5          , count(decode(AN_TYPE, 'hamster', 1, 'capybara', 1, 'porcupine', 1, 'dormouse', 1, NULL)) as "Number of Rodents"
+  6  from
+  7          VT_CLIENTS CLI
+  8          join VT_ANIMALS using (CL_ID)
+  9  group by
+ 10          CL_ID, CL_NAME_LAST
+ 11  order by
+ 12          CL_ID
+ 13  ;
+
+ Client ID Client Name               Number of Animals Number of Rodents
+---------- ------------------------- ----------------- -----------------
+       411 Carter                                    5                 0
+      1825 Harris                                    7                 3
+      1852 Dalrymple                                 8                 0
+      3560 Monk                                      3                 1
+      4534 Montgomery                                3                 0
+      5689 Biederbecke                               1                 0
+      5699 Biederbecke                               5                 1
+      6897 Drake                                     1                 0
+      7152 Brubeck                                   2                 0
+    408763 Turrentine                                3                 0
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> select
+  2          sum(NumberofExams) as "Number of Exams"
+  3          , count(AnimalwithExam) as "Number of Animals with Exams"
+  4  from
+  5          (
+  6          select
+  7                  AN_ID as AnimalwithExam
+  8                  , count(EX_ID) as NumberofExams
+  9          from
+ 10                  VT_EXAM_HEADERS
+ 11          where
+ 12                  trunc(EX_DATE, 'Q') = add_months(trunc(sysdate, 'Q'), -3)
+ 13          group by
+ 14                  AN_ID
+ 15          )
+ 16  ;
+
+Number of Exams Number of Animals with Exams
+--------------- ----------------------------
+              6                            4
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> with DataSource as
+  2  (
+  3  select
+  4          CL_ID
+  5          , CL_NAME_LAST
+  6          , sum(TotalFeePerAnimal) as TotalFee
+  7  from
+  8          (
+  9          select
+ 10                  CL_ID
+ 11                  , CL_NAME_LAST
+ 12                  , AN_ID
+ 13                  , nvl(sum(EX_FEE), 0.0) as TotalFeePerAnimal
+ 14          from
+ 15                  VT_CLIENTS
+ 16                  join VT_ANIMALS using (CL_ID)
+ 17                  join VT_EXAM_HEADERS using (AN_ID)
+ 18                  join VT_EXAM_DETAILS using (EX_ID)
+ 19          group by
+ 20                  CL_ID
+ 21                  , CL_NAME_LAST
+ 22                  , AN_ID
+ 23          )
+ 24  group by
+ 25          CL_ID
+ 26          , CL_NAME_LAST
+ 27  )
+ 28  select
+ 29          CL_ID
+ 30          , CL_NAME_LAST
+ 31  from
+ 32          DataSource
+ 33  where
+ 34          TotalFee =
+ 35          (
+ 36          select
+ 37                  max(TotalFee)
+ 38          from
+ 39                  DataSource
+ 40          )
+ 41  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      1825 Harris
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select
+  2          count(case when AN_TYPE = 'cat' then 1 end) as "Cats"
+  3          , count(case when AN_TYPE = 'dog' then 1 end) as "Dogs"
+  4          , count(case when AN_TYPE = 'hamster' or AN_TYPE = 'capybara' or AN_TYPE = 'porcupine' or AN_TYPE = 'dormouse' then 1 end) as "Rodents"
+  5          , count(case when AN_TYPE = 'snake' or AN_TYPE = 'chelonian' or AN_TYPE = 'crocodilian' or AN_TYPE = 'lizard' then 1 end) as "Reptiles"
+  6          , count(1) as "All Animals"
+  7  from
+  8          VT_ANIMALS
+  9  ;
+
+      Cats       Dogs    Rodents   Reptiles All Animals
+---------- ---------- ---------- ---------- -----------
+         8          9          5          8          38
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> with AnimalPossessions as
+  2  (
+  3  select
+  4          CL_ID
+  5          , CL_NAME_LAST
+  6          , count(AN_ID) as NumberOfAnimals
+  7  from
+  8          VT_CLIENTS CLI
+  9          join VT_ANIMALS ANI using (CL_ID)
+ 10  group by
+ 11          CL_ID
+ 12          , CL_NAME_LAST
+ 13  )
+ 14  select
+ 15          CL_ID
+ 16          , CL_NAME_LAST
+ 17  from
+ 18          AnimalPossessions
+ 19  where
+ 20          NumberOfAnimals = 1
+ 21  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      5689 Biederbecke
+      6897 Drake
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> with AnimalExams as
+  2  (
+  3  select
+  4          AN_ID as AnimalID
+  5          , to_char(max(EX_DATE), 'yyyy/mm/dd') as MostRecent
+  6  from
+  7          VT_EXAM_HEADERS
+  8  group by
+  9          AN_ID
+ 10  )
+ 11  select
+ 12          AN_ID as "AnimalID"
+ 13          , AN_TYPE
+ 14          , AN_NAME
+ 15          , nvl(MostRecent, 'No Exams') as "MostRecent"
+ 16  from
+ 17          VT_ANIMALS ANI
+ 18          left outer join AnimalExams ANE on (ANI.AN_ID = ANE.AnimalID)
+ 19  order by
+ 20          AN_ID
+ 21  ;
+
+  AnimalID AN_TYPE                   AN_NAME                   MostRecent
+---------- ------------------------- ------------------------- ----------
+     10002 cat                       Gutsy                     No Exams
+     11015 bird                      Kenny                     No Exams
+     11025 bird                                                No Exams
+     11029 bird                                                No Exams
+     12035 bird                      Mr Peanut                 2015/01/09
+     12038 porcupine                 Gutsy                     No Exams
+     15001 chelonian                 Big Mike                  2015/01/31
+     15002 chelonian                 George                    2015/08/10
+     15165 dog                       Burgess                   No Exams
+     15401 lizard                    Pinkie                    2014/11/06
+     16002 porcupine                 Fritz                     2015/09/03
+     16003 cat                       Ursula                    2015/01/01
+     16004 cat                       Napper                    No Exams
+     16043 dog                       Ursula                    No Exams
+     16044 dog                       Triton                    No Exams
+     17002 porcupine                 Fritzchen                 2014/10/10
+     17025 lizard                    25                        2015/02/25
+     17026 lizard                    3P#_26                    2015/01/15
+     17027 lizard                    3P#_25                    2014/12/27
+     19845 dog                       Pinkie                    2014/11/22
+     21001 hedgehog                  Yoggie                    2015/08/23
+     21002 hedgehog                  Edger                     No Exams
+     21003 dog                       Calvin Coolidge           2014/12/26
+     21004 snake                     Gutsy                     No Exams
+     21005 dormouse                  Koshka                    2014/12/31
+     21006 hamster                   Koshka                    No Exams
+     21007 snake                                               No Exams
+     21205 dog                       Manfried                  No Exams
+     21305 dog                       Spot                      No Exams
+     21306 dog                       Shadow                    No Exams
+     21307 dog                       Buddy                     No Exams
+     21314 cat                       Adalwine                  No Exams
+     21315 cat                       Baldric                   No Exams
+     21316 cat                       Etta                      No Exams
+     21317 cat                       Manfried                  2015/07/23
+     21318 cat                       Waldrom                   No Exams
+     21320 olinguito                 Morris                    No Exams
+     21321 olinguito                 Morton                    No Exams
+
+38 rows selected.
+
+SQL> 
+SQL> /*  TASK 09 */
+SQL> column an_name format a15;
+SQL> column an_type format a15;
+SQL> column cl_id format 999999;
+SQL> column an_id format 999999;
+SQL> 
+SQL> with AnimalExamFee as
+  2  (
+  3  select
+  4          AN_ID
+  5          , nvl(sum(EX_FEE), 0.0) as TotalFee
+  6  from
+  7          VT_ANIMALS
+  8          join VT_EXAM_HEADERS using (AN_ID)
+  9          join VT_EXAM_DETAILS using (EX_ID)
+ 10  group by
+ 11          AN_ID
+ 12  )
+ 13  select
+ 14          ANI.AN_ID
+ 15          , ANI.AN_TYPE
+ 16          , ANI.AN_NAME
+ 17          , CLI.CL_ID
+ 18          , CLI.CL_PHONE
+ 19  from
+ 20          VT_ANIMALS ANI
+ 21          join AnimalExamFee AEF on (ANI.AN_ID = AEF.AN_ID)
+ 22          join VT_CLIENTS CLI on (ANI.CL_ID = CLI.CL_ID)
+ 23  where
+ 24          AEF.TotalFee > 150
+ 25          and ANI.AN_ID not in
+ 26                  (
+ 27                  select
+ 28                          AN_ID
+ 29                  from
+ 30                          VT_EXAM_HEADERS
+ 31                  where
+ 32                          to_char(EX_DATE, 'yyyy') = to_char(sysdate, 'yyyy')
+ 33                  )
+ 34  ;
+
+  AN_ID AN_TYPE         AN_NAME           CL_ID CL_PHONE
+------- --------------- --------------- ------- ------------
+  17002 porcupine       Fritzchen          5699 415.239.6875
+  21005 dormouse        Koshka             1825
+
+2 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

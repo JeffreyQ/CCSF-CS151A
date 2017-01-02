@@ -1,0 +1,353 @@
+SQL> 
+SQL> 
+SQL> set echo on
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         13-SEP-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select CL_ID as "Client Id", AN_ID as "Animal Id", AN_TYPE as "Animal Type", AN_NAME as "Animal Name"
+  2  from VT_ANIMALS
+  3  where extract( year from AN_DOB ) <= 2009
+  4  ;
+
+ Client Id  Animal Id Animal Type               Animal Name
+---------- ---------- ------------------------- -------------------------
+      3560      12035 bird                      Mr Peanut
+       411      15401 lizard                    Pinkie
+      1825      21002 hedgehog                  Edger
+       411      21003 dog                       Calvin Coolidge
+      4534      11029 bird
+       411      15165 dog                       Burgess
+      6897      16004 cat                       Napper
+      5699      15001 chelonian                 Big Mike
+      5699      15002 chelonian                 George
+       411      19845 dog                       Pinkie
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          EXH.EX_ID as "Exam Id"
+  3          , EXH.EX_DATE as "Exam Date"
+  4          , EXD.SRV_ID as "Service Id"
+  5          , EXD.EX_FEE as "Fee Charged"
+  6  --      , ANI.AN_TYPE as "Animal Type"
+  7  from
+  8          VT_EXAM_HEADERS EXH
+  9          join VT_EXAM_DETAILS EXD on (EXH.EX_ID = EXD.EX_ID)
+ 10          join VT_ANIMALS ANI on (EXH.AN_ID = ANI.AN_ID)
+ 11  where
+ 12          ANI.AN_TYPE in ('hamster', 'capybara', 'porcupine', 'dormouse')
+ 13  order by
+ 14          EXD.EX_ID
+ 15          , EXD.SRV_ID
+ 16  ;
+
+   Exam Id Exam Date Service Id Fee Charged
+---------- --------- ---------- -----------
+      3105 10-OCT-14        110         150
+      3105 10-OCT-14        523        50.5
+      3203 03-NOV-14        524          20
+      3321 17-FEB-15        748           0
+      3322 10-FEB-15        748        29.5
+      3323 25-FEB-15        524          20
+      3323 25-FEB-15        687          45
+      3393 23-DEC-14        748        29.5
+      3393 23-DEC-14        749           0
+      3486 31-DEC-14       4601         275
+      4103 08-JAN-15       4601         275
+      4203 03-AUG-15        524          20
+      4233 03-SEP-15        524          20
+      4243 08-JUN-15       4601         275
+      4255 08-JUL-15       4601         275
+
+15 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select
+  2          STF.STF_ID as "STF.ID"
+  3          , STF.STF_NAME_FIRST || STF.STF_NAME_LAST as "STAFF"
+  4          , EXH.EX_DATE as "EX_DATE"
+  5  from
+  6          VT_EXAM_HEADERS EXH
+  7          join VT_STAFF STF on (EXH.STF_ID = STF.STF_ID)
+  8          join VT_ANIMALS ANI on (EXH.AN_ID = ANI.AN_ID)
+  9  where
+ 10          ANI.AN_TYPE not in ('snake', 'chelonian', 'crocodilian', 'lizard', 'bird')
+ 11  order by
+ 12          EXH.EX_DATE
+ 13  ;
+
+    STF.ID STAFF                                              EX_DATE
+---------- -------------------------------------------------- ---------
+        29 SandyHelfen                                        10-OCT-14
+        29 SandyHelfen                                        03-NOV-14
+        15 ElizaDolittle                                      10-NOV-14
+        15 ElizaDolittle                                      22-NOV-14
+        15 ElizaDolittle                                      23-NOV-14
+        15 ElizaDolittle                                      01-DEC-14
+        15 ElizaDolittle                                      23-DEC-14
+        29 SandyHelfen                                        23-DEC-14
+        15 ElizaDolittle                                      26-DEC-14
+        15 ElizaDolittle                                      31-DEC-14
+        15 ElizaDolittle                                      01-JAN-15
+        38 RhodaWabich                                        08-JAN-15
+        29 SandyHelfen                                        10-FEB-15
+        29 SandyHelfen                                        17-FEB-15
+        29 SandyHelfen                                        25-FEB-15
+        38 RhodaWabich                                        08-JUN-15
+        38 RhodaWabich                                        08-JUL-15
+        15 ElizaDolittle                                      23-JUL-15
+        29 SandyHelfen                                        03-AUG-15
+        15 ElizaDolittle                                      23-AUG-15
+        29 SandyHelfen                                        03-SEP-15
+
+21 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> /* I assume that the display order is by date rather than date & time. Thus, the trunc() function is used. */
+SQL> select
+  2          ANI.CL_ID as "Client Id"
+  3          , EXH.EX_ID as "Exam Id"
+  4          , EXH.EX_DATE as "Exam Date"
+  5          , EXD.SRV_ID as "Service Id"
+  6          , EXD.EX_FEE as "Exam Fee"
+  7  from
+  8          VT_EXAM_HEADERS EXH
+  9          join VT_EXAM_DETAILS EXD on (EXH.EX_ID = EXD.EX_ID)
+ 10          join VT_ANIMALS ANI on (EXH.AN_ID = ANI.AN_ID)
+ 11  where
+ 12          EXD.EX_FEE not between 50 and 100
+ 13  order by
+ 14          trunc(EXH.EX_DATE) asc
+ 15          , EXD.SRV_ID asc
+ 16  ;
+
+ Client Id    Exam Id Exam Date Service Id   Exam Fee
+---------- ---------- --------- ---------- ----------
+      5699       3202 03-OCT-14        341         20
+      5699       3105 10-OCT-14        110        150
+      7152       3010 22-OCT-14        104         25
+      7152       3010 22-OCT-14        605        535
+      7152       3001 24-OCT-14        104         25
+      1825       3203 03-NOV-14        524         20
+       411       3513 06-NOV-14        104         30
+      5699       3306 06-NOV-14        104         30
+      7152       3304 06-NOV-14        341         25
+      5699       3306 06-NOV-14        687         45
+      5699       3306 06-NOV-14       1002         25
+      7152       3304 06-NOV-14       1003         25
+      5699       3514 10-NOV-14        104         30
+      1825       3552 10-NOV-14        308       2.25
+      5699       3514 10-NOV-14       1002         15
+      5699       3514 10-NOV-14       1003         25
+       411       3282 23-NOV-14        615      25.25
+      1825       3413 01-DEC-14        308          5
+      1825       3612 23-DEC-14        602        222
+      1825       3612 23-DEC-14        604        109
+      1825       3612 23-DEC-14        606         40
+      1825       3612 23-DEC-14        612      25.91
+      1825       3612 23-DEC-14        613         47
+      1825       3612 23-DEC-14        625        155
+      1825       3393 23-DEC-14        748       29.5
+      1825       3393 23-DEC-14        749          0
+       411       3392 26-DEC-14        398         30
+       411       3392 26-DEC-14        400         21
+       411       3392 26-DEC-14       1003         45
+      7152       3409 27-DEC-14        104         25
+      5699       3411 29-DEC-14        341         20
+      5699       3412 30-DEC-14        341         20
+      1825       3486 31-DEC-14       4601        275
+      1825       4103 08-JAN-15       4601        275
+      3560       3104 09-JAN-15        613         47
+      7152       3325 15-JAN-15        104         25
+      5699       3494 22-JAN-15        104         30
+      5699       3288 31-JAN-15        104         30
+      5699       3288 31-JAN-15        687         45
+      5699       3288 31-JAN-15       1002         25
+      1825       3322 10-FEB-15        748       29.5
+      1825       3321 17-FEB-15        748          0
+      5699       3324 25-FEB-15        104         30
+      1825       3323 25-FEB-15        524         20
+      1825       3323 25-FEB-15        687         45
+      5699       3324 25-FEB-15        687         45
+      5699       3324 25-FEB-15       1002         25
+      1825       4243 08-JUN-15       4601        275
+      1825       4255 08-JUL-15       4601        275
+      1852       4612 23-JUL-15        602        222
+      1852       4612 23-JUL-15        606         40
+      1852       4612 23-JUL-15        612      25.91
+      1825       4203 03-AUG-15        524         20
+      5699       4514 10-AUG-15        104         30
+      5699       4514 10-AUG-15       1002         15
+      5699       4514 10-AUG-15       1003         25
+       411       4282 23-AUG-15        615      25.25
+      1825       4233 03-SEP-15        524         20
+
+58 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select *
+  2  from
+  3          VT_SERVICES
+  4  where
+  5          SRV_DESC like '%Feline%' and SRV_DESC not like '%Dental%'
+  6  order by
+  7          SRV_TYPE
+  8          , SRV_ID
+  9  ;
+
+    SRV_ID SRV_LIST_PRICE SRV_DESC                                           SRV_TYPE
+---------- -------------- -------------------------------------------------- -------------------------
+       225             75 Feline PCR Series                                  medicine
+       551           35.5 First Feline PCR                                   medicine
+       552          25.15 Second Feline PCR                                  medicine
+       553          25.85 Third Feline PCR                                   medicine
+       108             80 Routine Exam-Feline                                office visit
+       308             45 Followup Exam-Feline                               office visit
+      4601            275 Feline Behaviour Modification Consultation         treatment
+
+7 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select distinct
+  2          CLI.CL_ID as "Client Id"
+  3          , CLI.CL_NAME_LAST as "Last Name"
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_CLIENTS CLI on (ANI.CL_ID = CLI.CL_ID)
+  7  where
+  8          ANI.AN_TYPE = 'dog'
+  9  order by
+ 10          CLI.CL_ID
+ 11  ;
+
+ Client Id Last Name
+---------- -------------------------
+       411 Carter
+      1825 Harris
+      5689 Biederbecke
+    408763 Turrentine
+
+4 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> /* I assume that any client who has at least one non-dog animal meets the criteria. */
+SQL> select distinct
+  2          CLI.CL_ID as "Client Id"
+  3          , CLI.CL_NAME_LAST as "Last Name"
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_CLIENTS CLI on (ANI.CL_ID = CLI.CL_ID)
+  7  where
+  8          ANI.AN_TYPE != 'dog'
+  9  order by
+ 10          CLI.CL_ID
+ 11  ;
+
+ Client Id Last Name
+---------- -------------------------
+       411 Carter
+      1825 Harris
+      1852 Dalrymple
+      3560 Monk
+      4534 Montgomery
+      5699 Biederbecke
+      6897 Drake
+      7152 Brubeck
+
+8 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> select distinct
+  2          CLI.CL_ID as "Client Id"
+  3          , CLI.CL_NAME_LAST as "Last Name"
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_CLIENTS CLI on (ANI.CL_ID = CLI.CL_ID)
+  7  where
+  8          ANI.AN_TYPE in ('hamster', 'capybara', 'porcupine', 'dormouse')
+  9  order by
+ 10          CLI.CL_ID
+ 11  ;
+
+ Client Id Last Name
+---------- -------------------------
+      1825 Harris
+      3560 Monk
+      5699 Biederbecke
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 09 */
+SQL> /* I assume that any client who has at least one non-rodent animal meets the criteria. */
+SQL> select distinct
+  2          CLI.CL_ID as "Client Id"
+  3          , CLI.CL_NAME_LAST as "Last Name"
+  4  , ANI.AN_TYPE
+  5  from
+  6          VT_ANIMALS ANI
+  7          join VT_CLIENTS CLI on (ANI.CL_ID = CLI.CL_ID)
+  8  where
+  9          ANI.AN_TYPE not in ('hamster', 'capybara', 'porcupine', 'dormouse')
+ 10  order by
+ 11          CLI.CL_ID
+ 12  ;
+
+ Client Id Last Name                 AN_TYPE
+---------- ------------------------- -------------------------
+       411 Carter                    dog
+       411 Carter                    hedgehog
+       411 Carter                    lizard
+      1825 Harris                    cat
+      1825 Harris                    dog
+      1825 Harris                    hedgehog
+      1852 Dalrymple                 cat
+      1852 Dalrymple                 olinguito
+      1852 Dalrymple                 snake
+      3560 Monk                      bird
+      3560 Monk                      cat
+      4534 Montgomery                bird
+      5689 Biederbecke               dog
+      5699 Biederbecke               chelonian
+      5699 Biederbecke               lizard
+      5699 Biederbecke               snake
+      6897 Drake                     cat
+      7152 Brubeck                   lizard
+    408763 Turrentine                dog
+
+19 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

@@ -1,0 +1,404 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         26-OCT-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> /* assume that "No Last Name" and "No First Name" will be displayed if corresponding column is NULL */
+SQL> 
+SQL> drop view BkOrdersPriorYear;
+
+View dropped.
+
+SQL> 
+SQL> create view BkOrdersPriorYear
+  2  as
+  3          select
+  4                  CUST_ID as "C_ID"
+  5                  , nvl(CUST_NAME_LAST, 'No Last Name') || ', ' || nvl(CUST_NAME_FIRST, 'No First Name') as "C_NAME"
+  6                  , extract(month from ORDER_DATE) as ORDER_MONTH
+  7          from
+  8                  BK_CUSTOMERS CUS
+  9                  join BK_ORDER_HEADERS ORH using (CUST_ID)
+ 10          where
+ 11                  extract(year from ORDER_DATE) = extract(year from sysdate) - 1;
+
+View created.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 02  */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  where
+  9          ORDER_MONTH = 3
+ 10  )
+ 11  intersect
+ 12  (
+ 13  select
+ 14          C_ID
+ 15          , C_NAME
+ 16  --      , ORDER_MONTH
+ 17  from
+ 18          BkOrdersPriorYear
+ 19  where
+ 20          ORDER_MONTH = 6
+ 21  )
+ 22  intersect
+ 23  (
+ 24  select
+ 25          C_ID
+ 26          , C_NAME
+ 27  --      , ORDER_MONTH
+ 28  from
+ 29          BkOrdersPriorYear
+ 30  where
+ 31          ORDER_MONTH = 9
+ 32  )
+ 33  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    261502 Hawthorne, Nathaniel
+    272787 Carlson, Ben
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  where
+  9          ORDER_MONTH = 4
+ 10  )
+ 11  union
+ 12  (
+ 13  select
+ 14          C_ID
+ 15          , C_NAME
+ 16  --      , ORDER_MONTH
+ 17  from
+ 18          BkOrdersPriorYear
+ 19  where
+ 20          ORDER_MONTH = 6
+ 21  )
+ 22  union
+ 23  (
+ 24  select
+ 25          C_ID
+ 26          , C_NAME
+ 27  --      , ORDER_MONTH
+ 28  from
+ 29          BkOrdersPriorYear
+ 30  where
+ 31          ORDER_MONTH = 8
+ 32  )
+ 33  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    200368 Blake, William
+    212921 Books on Tap, No First Name
+    218709 Bonnard, Paul
+    221297 Dodgson, Charles
+    222477 Rossetti, Christina
+    226656 Randall, Randell
+    227105 Kafka, Franz
+    234138 Keats, John
+    259906 Capybara, Wile E.
+    261502 Hawthorne, Nathaniel
+    263119 Jones, No First Name
+    267780 Shelly, Mary
+    272787 Carlson, Ben
+    276381 Collins, Douglas
+    290298 Swift, Jonathan
+
+15 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  where
+  9          ORDER_MONTH = 4
+ 10  )
+ 11  intersect
+ 12  (
+ 13  select
+ 14          C_ID
+ 15          , C_NAME
+ 16  --      , ORDER_MONTH
+ 17  from
+ 18          BkOrdersPriorYear
+ 19  where
+ 20          ORDER_MONTH = 5
+ 21  )
+ 22  minus
+ 23  (
+ 24  select
+ 25          C_ID
+ 26          , C_NAME
+ 27  --      , ORDER_MONTH
+ 28  from
+ 29          BkOrdersPriorYear
+ 30  where
+ 31          ORDER_MONTH = 6
+ 32  )
+ 33  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    212921 Books on Tap, No First Name
+
+1 row selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 05 */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  where
+  9          ORDER_MONTH = 3
+ 10  )
+ 11  union
+ 12  (
+ 13  select
+ 14          C_ID
+ 15          , C_NAME
+ 16  --      , ORDER_MONTH
+ 17  from
+ 18          BkOrdersPriorYear
+ 19  where
+ 20          ORDER_MONTH = 6
+ 21  )
+ 22  minus
+ 23  (
+ 24  select
+ 25          C_ID
+ 26          , C_NAME
+ 27  --      , ORDER_MONTH
+ 28  from
+ 29          BkOrdersPriorYear
+ 30  where
+ 31          ORDER_MONTH = 9
+ 32  )
+ 33  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    200368 Blake, William
+    222477 Rossetti, Christina
+    226656 Randall, Randell
+    234138 Keats, John
+    259906 Capybara, Wile E.
+    267780 Shelly, Mary
+    276381 Collins, Douglas
+    282716 Biederbecke, Dwight
+
+8 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  )
+  9  minus
+ 10  (
+ 11  select
+ 12          C_ID
+ 13          , C_NAME
+ 14  --      , ORDER_MONTH
+ 15  from
+ 16          BkOrdersPriorYear
+ 17  where
+ 18          ORDER_MONTH = 3
+ 19  )
+ 20  minus
+ 21  (
+ 22  select
+ 23          C_ID
+ 24          , C_NAME
+ 25  --      , ORDER_MONTH
+ 26  from
+ 27          BkOrdersPriorYear
+ 28  where
+ 29          ORDER_MONTH = 6
+ 30  )
+ 31  minus
+ 32  (
+ 33  select
+ 34          C_ID
+ 35          , C_NAME
+ 36  --      , ORDER_MONTH
+ 37  from
+ 38          BkOrdersPriorYear
+ 39  where
+ 40          ORDER_MONTH = 9
+ 41  )
+ 42  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    224038 Austin, Pat
+    228175 Cardin, Benjamin
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> (
+  2  select
+  3          C_ID
+  4          , C_NAME
+  5  --      , ORDER_MONTH
+  6  from
+  7          BkOrdersPriorYear
+  8  where
+  9          ORDER_MONTH = 1
+ 10  )
+ 11  minus
+ 12  (
+ 13  select
+ 14          C_ID
+ 15          , C_NAME
+ 16  --      , ORDER_MONTH
+ 17  from
+ 18          BkOrdersPriorYear
+ 19  where
+ 20          ORDER_MONTH = 2
+ 21  )
+ 22  minus
+ 23  (
+ 24  select
+ 25          C_ID
+ 26          , C_NAME
+ 27  --      , ORDER_MONTH
+ 28  from
+ 29          BkOrdersPriorYear
+ 30  where
+ 31          ORDER_MONTH = 3
+ 32  )
+ 33  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    226656 Randall, Randell
+    259906 Capybara, Wile E.
+
+2 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 08 */
+SQL> (
+  2  (
+  3  select
+  4          C_ID
+  5          , C_NAME
+  6  --      , ORDER_MONTH
+  7  from
+  8          BkOrdersPriorYear
+  9  where
+ 10          ORDER_MONTH = 3
+ 11  )
+ 12  union
+ 13  (
+ 14  select
+ 15          C_ID
+ 16          , C_NAME
+ 17  --      , ORDER_MONTH
+ 18  from
+ 19          BkOrdersPriorYear
+ 20  where
+ 21          ORDER_MONTH = 6
+ 22  )
+ 23  )
+ 24  minus
+ 25  (
+ 26  (
+ 27  select
+ 28          C_ID
+ 29          , C_NAME
+ 30  --      , ORDER_MONTH
+ 31  from
+ 32          BkOrdersPriorYear
+ 33  where
+ 34          ORDER_MONTH = 3
+ 35  )
+ 36  intersect
+ 37  (
+ 38  select
+ 39          C_ID
+ 40          , C_NAME
+ 41  --      , ORDER_MONTH
+ 42  from
+ 43          BkOrdersPriorYear
+ 44  where
+ 45          ORDER_MONTH = 6
+ 46  )
+ 47  )
+ 48  ;
+
+      C_ID C_NAME
+---------- ------------------------------------------
+    218709 Bonnard, Paul
+    221297 Dodgson, Charles
+    222477 Rossetti, Christina
+    226656 Randall, Randell
+    227105 Kafka, Franz
+    234138 Keats, John
+    259906 Capybara, Wile E.
+    263119 Jones, No First Name
+    276381 Collins, Douglas
+    282716 Biederbecke, Dwight
+    290298 Swift, Jonathan
+
+11 rows selected.
+
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> spool off

@@ -1,0 +1,248 @@
+SQL> 
+SQL> 
+SQL> set echo on
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> SELECT 'JEFFREY QIU' AS NAME
+  2  FROM DUAL;
+
+NAME
+-----------
+JEFFREY QIU
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 00 */
+SQL> 
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         31-AUG-15
+
+1 row selected.
+
+SQL> 
+SQL> select *
+  2  from v$version;
+
+BANNER                                                                               CON_ID
+-------------------------------------------------------------------------------- ----------
+Oracle Database 12c Enterprise Edition Release 12.1.0.1.0 - 64bit Production              0
+PL/SQL Release 12.1.0.1.0 - Production                                                    0
+CORE	12.1.0.1.0	Production                                                                0
+TNS for Linux: Version 12.1.0.1.0 - Production                                            0
+NLSRTL Version 12.1.0.1.0 - Production                                                    0
+
+5 rows selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> 
+SQL> delete
+  2  from zoo_2015
+  3  where z_id > 100;
+
+0 rows deleted.
+
+SQL> 
+SQL> select *
+  2  from zoo_2015;
+
+      Z_ID Z_NAME                    Z_TYPE                        Z_COST Z_DOB     Z_ACQUIRE
+---------- ------------------------- ------------------------- ---------- --------- ---------
+        23 Sam                       Giraffe                         5000 15-MAY-14 15-MAY-14
+        25 Abigail                   Armadillo                        490 15-JAN-13 15-APR-13
+        56 Leon                      Lion                            5000 25-FEB-10 25-MAR-10
+        57 Lenora                    Lion                            5000 25-MAR-14 31-MAR-14
+        85 Sally Robinson            Giraffe                      5000.25 15-MAY-14 15-MAY-14
+        43 Huey                      Zebra                        2500.25 02-JUN-13 02-JUN-14
+        44 Dewey                     Zebra                        2500.25 02-JUN-14 02-JUN-14
+        45 Louie                     Zebra                        2500.25 02-JAN-13 02-JAN-13
+        47                           Horse                            490 10-JAN-15 15-JAN-15
+        52 Dewey                     Giraffe                         3750 06-JUN-13 12-JUL-13
+
+10 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> 
+SQL> Insert Into zoo_2015  (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (101, 'Tommy', 'Shark', 500.00, to_date('2015-05-15', 'YYYY-MM-DD'), date '2015-05-15');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015  (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (102, 'Fan', 'Butterfly', 115.00, to_date('2015-06-15', 'YYYY-MM-DD'), date '2015-06-15');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015  (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (103, 'Mask', 'Frog', 310.00, to_date('2015-01-11', 'YYYY-MM-DD'), date '2015-01-16');
+
+1 row created.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (111, 'Buddy', 'Dog', 1500, to_date('2014-03-17', 'YYYY-MM-DD'), date '2015-02-02');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (222, 'Sophie', 'Cat', 1500, to_date('2015-05-11', 'YYYY-MM-DD'), date '2015-07-17');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (333, 'Jake', 'Leopard', 23000, to_date('2013-8-18', 'YYYY-MM-DD'), date '2015-03-17');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (325, 'John', 'Elephant', 15000.00, to_date('2012-03-27', 'YYYY-MM-DD'), date '2014-06-28');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (326, 'George', 'Monkey', 9000.00, to_date('2012-05-23', 'YYYY-MM-DD'), date '2014-06-28');
+
+1 row created.
+
+SQL> 
+SQL> Insert Into zoo_2015 (z_id, z_name, z_type, z_cost, z_dob, z_acquired) Values
+  2    (327, 'Michael', 'Turtle', 200.00, to_date('2011-01-19', 'YYYY-MM-DD'), date '2014-06-28');
+
+1 row created.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> 
+SQL> select z_id, z_name, z_type, z_cost, z_dob, z_acquired
+  2  from zoo_2015;
+
+      Z_ID Z_NAME                    Z_TYPE                        Z_COST Z_DOB     Z_ACQUIRE
+---------- ------------------------- ------------------------- ---------- --------- ---------
+        23 Sam                       Giraffe                         5000 15-MAY-14 15-MAY-14
+        25 Abigail                   Armadillo                        490 15-JAN-13 15-APR-13
+        56 Leon                      Lion                            5000 25-FEB-10 25-MAR-10
+        57 Lenora                    Lion                            5000 25-MAR-14 31-MAR-14
+        85 Sally Robinson            Giraffe                      5000.25 15-MAY-14 15-MAY-14
+        43 Huey                      Zebra                        2500.25 02-JUN-13 02-JUN-14
+        44 Dewey                     Zebra                        2500.25 02-JUN-14 02-JUN-14
+        45 Louie                     Zebra                        2500.25 02-JAN-13 02-JAN-13
+        47                           Horse                            490 10-JAN-15 15-JAN-15
+        52 Dewey                     Giraffe                         3750 06-JUN-13 12-JUL-13
+       101 Tommy                     Shark                            500 15-MAY-15 15-MAY-15
+       102 Fan                       Butterfly                        115 15-JUN-15 15-JUN-15
+       103 Mask                      Frog                             310 11-JAN-15 16-JAN-15
+       111 Buddy                     Dog                             1500 17-MAR-14 02-FEB-15
+       222 Sophie                    Cat                             1500 11-MAY-15 17-JUL-15
+       333 Jake                      Leopard                        23000 18-AUG-13 17-MAR-15
+       325 John                      Elephant                       15000 27-MAR-12 28-JUN-14
+       326 George                    Monkey                          9000 23-MAY-12 28-JUN-14
+       327 Michael                   Turtle                           200 19-JAN-11 28-JUN-14
+
+19 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> 
+SQL> select z_type, z_name, z_cost
+  2  from zoo_2015
+  3  order by z_type, z_name;
+
+Z_TYPE                    Z_NAME                        Z_COST
+------------------------- ------------------------- ----------
+Armadillo                 Abigail                          490
+Butterfly                 Fan                              115
+Cat                       Sophie                          1500
+Dog                       Buddy                           1500
+Elephant                  John                           15000
+Frog                      Mask                             310
+Giraffe                   Dewey                           3750
+Giraffe                   Sally Robinson               5000.25
+Giraffe                   Sam                             5000
+Horse                                                      490
+Leopard                   Jake                           23000
+Lion                      Lenora                          5000
+Lion                      Leon                            5000
+Monkey                    George                          9000
+Shark                     Tommy                            500
+Turtle                    Michael                          200
+Zebra                     Dewey                        2500.25
+Zebra                     Huey                         2500.25
+Zebra                     Louie                        2500.25
+
+19 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> 
+SQL> select z_id, z_name, z_dob
+  2  from zoo_2015
+  3  where z_type = 'Zebra'
+  4  order by z_dob desc;
+
+      Z_ID Z_NAME                    Z_DOB
+---------- ------------------------- ---------
+        44 Dewey                     02-JUN-14
+        43 Huey                      02-JUN-13
+        45 Louie                     02-JAN-13
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 07 */
+SQL> 
+SQL> select tname
+  2  from tab;
+
+TNAME
+--------------------------------------------------------------------------------------------------------------------------------
+ZOO_2015
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> 
+SQL> desc zoo_2015
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ Z_ID                                                                                                              NOT NULL NUMBER(38)
+ Z_NAME                                                                                                                     VARCHAR2(25)
+ Z_TYPE                                                                                                            NOT NULL VARCHAR2(25)
+ Z_COST                                                                                                            NOT NULL NUMBER(7,2)
+ Z_DOB                                                                                                             NOT NULL DATE
+ Z_ACQUIRED                                                                                                        NOT NULL DATE
+
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> SPOOL OFF

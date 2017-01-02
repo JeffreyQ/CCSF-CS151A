@@ -1,0 +1,381 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         28-SEP-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6          left outer join VT_ANIMALS ANI using (CL_ID)
+  7  where
+  8          AN_ID is null
+  9  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      3423 Hawkins
+      5686 Biederbecke
+      5698 Biederbecke
+      7212 Davis
+     25479 Boston
+
+5 rows selected.
+
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6  where
+  7          not exists
+  8          (
+  9                  select
+ 10                          1
+ 11                  from
+ 12                          VT_ANIMALS ANI
+ 13                  where
+ 14                          ANI.CL_ID = CLI.CL_ID
+ 15          )
+ 16  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      3423 Hawkins
+      5686 Biederbecke
+      5698 Biederbecke
+      7212 Davis
+     25479 Boston
+
+5 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4  from
+  5          VT_CLIENTS CLI
+  6  where
+  7          CLI.CL_ID not in
+  8          (
+  9                  select
+ 10                          ANI.CL_ID
+ 11                  from
+ 12                          VT_ANIMALS ANI
+ 13                  where
+ 14                          ANI.CL_ID = CLI.CL_ID
+ 15                          and ANI.AN_TYPE in ('snake', 'chelonian', 'crocodilian', 'lizard')
+ 16          )
+ 17  ;
+
+     CL_ID CL_NAME_LAST
+---------- -------------------------
+      1825 Harris
+      3423 Hawkins
+      3560 Monk
+      4534 Montgomery
+      5686 Biederbecke
+      5689 Biederbecke
+      5698 Biederbecke
+      6897 Drake
+      7212 Davis
+     25479 Boston
+    408763 Turrentine
+
+11 rows selected.
+
+SQL> 
+SQL> /*
+SQL> --      This query is used to verify whether the previous query includes the "no animal" clients.
+SQL> 
+SQL> (
+SQL> select
+SQL>         CL_ID
+SQL>         , CL_NAME_LAST
+SQL> from
+SQL>         VT_CLIENTS CLI
+SQL> where
+SQL>         not exists
+SQL>         (
+SQL>                 select
+SQL>                         1
+SQL>                 from
+SQL>                         VT_ANIMALS ANI
+SQL>                 where
+SQL>                         ANI.CL_ID = CLI.CL_ID
+SQL>         )
+SQL> )
+SQL> UNION
+SQL> (
+SQL> select
+SQL>         CL_ID
+SQL>         , CL_NAME_LAST
+SQL> from
+SQL>         VT_CLIENTS CLI
+SQL> where
+SQL>         CLI.CL_ID not in
+SQL>         (
+SQL>                 select
+SQL>                         ANI.CL_ID
+SQL>                 from
+SQL>                         VT_ANIMALS ANI
+SQL>                 where
+SQL>                         ANI.CL_ID = CLI.CL_ID
+SQL>                         and ANI.AN_TYPE in ('snake', 'chelonian', 'crocodilian', 'lizard')
+SQL>         )
+SQL> )
+SQL> ;
+SQL> 
+SQL> */
+SQL> 
+SQL> /*  TASK 04 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4          , decode(AN_TYPE, NULL, 'no animals', nvl(AN_NAME, 'no name')) as AN_NAME
+  5          , decode(AN_TYPE, NULL, 'no animals', AN_TYPE) as AN_TYPE
+  6  from
+  7          VT_CLIENTS CLI
+  8          left outer join VT_ANIMALS ANI using (CL_ID)
+  9  ;
+
+     CL_ID CL_NAME_LAST              AN_NAME                   AN_TYPE
+---------- ------------------------- ------------------------- -------------------------
+       411 Carter                    Burgess                   dog
+       411 Carter                    Pinkie                    lizard
+       411 Carter                    Yoggie                    hedgehog
+       411 Carter                    Calvin Coolidge           dog
+       411 Carter                    Pinkie                    dog
+      1825 Harris                    Edger                     hedgehog
+      1825 Harris                    Koshka                    hamster
+      1825 Harris                    Ursula                    dog
+      1825 Harris                    Triton                    dog
+      1825 Harris                    Koshka                    dormouse
+      1825 Harris                    Ursula                    cat
+      1825 Harris                    Fritz                     porcupine
+      1852 Dalrymple                 Manfried                  cat
+      1852 Dalrymple                 Baldric                   cat
+      1852 Dalrymple                 Morris                    olinguito
+      1852 Dalrymple                 Adalwine                  cat
+      1852 Dalrymple                 Waldrom                   cat
+      1852 Dalrymple                 no name                   snake
+      1852 Dalrymple                 Etta                      cat
+      1852 Dalrymple                 Morton                    olinguito
+      3423 Hawkins                   no animals                no animals
+      3560 Monk                      Gutsy                     porcupine
+      3560 Monk                      Gutsy                     cat
+      3560 Monk                      Mr Peanut                 bird
+      4534 Montgomery                no name                   bird
+      4534 Montgomery                no name                   bird
+      4534 Montgomery                Kenny                     bird
+      5686 Biederbecke               no animals                no animals
+      5689 Biederbecke               Manfried                  dog
+      5698 Biederbecke               no animals                no animals
+      5699 Biederbecke               Gutsy                     snake
+      5699 Biederbecke               Fritzchen                 porcupine
+      5699 Biederbecke               Big Mike                  chelonian
+      5699 Biederbecke               George                    chelonian
+      5699 Biederbecke               25                        lizard
+      6897 Drake                     Napper                    cat
+      7152 Brubeck                   3P#_26                    lizard
+      7152 Brubeck                   3P#_25                    lizard
+      7212 Davis                     no animals                no animals
+     25479 Boston                    no animals                no animals
+    408763 Turrentine                Shadow                    dog
+    408763 Turrentine                Spot                      dog
+    408763 Turrentine                Buddy                     dog
+
+43 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4          , AN_ID
+  5          , AN_NAME
+  6          , AN_TYPE
+  7  from
+  8          VT_CLIENTS CLI
+  9          join VT_ANIMALS ANI using (CL_ID)
+ 10          left outer join VT_EXAM_HEADERS EXH using (AN_ID)
+ 11  where
+ 12          EXH.EX_ID is null
+ 13  order by
+ 14          CL_ID, AN_ID
+ 15  ;
+
+     CL_ID CL_NAME_LAST                   AN_ID AN_NAME                   AN_TYPE
+---------- ------------------------- ---------- ------------------------- -------------------------
+       411 Carter                         15165 Burgess                   dog
+      1825 Harris                         16043 Ursula                    dog
+      1825 Harris                         16044 Triton                    dog
+      1825 Harris                         21002 Edger                     hedgehog
+      1825 Harris                         21006 Koshka                    hamster
+      1852 Dalrymple                      21007                           snake
+      1852 Dalrymple                      21314 Adalwine                  cat
+      1852 Dalrymple                      21315 Baldric                   cat
+      1852 Dalrymple                      21316 Etta                      cat
+      1852 Dalrymple                      21318 Waldrom                   cat
+      1852 Dalrymple                      21320 Morris                    olinguito
+      1852 Dalrymple                      21321 Morton                    olinguito
+      3560 Monk                           10002 Gutsy                     cat
+      3560 Monk                           12038 Gutsy                     porcupine
+      4534 Montgomery                     11015 Kenny                     bird
+      4534 Montgomery                     11025                           bird
+      4534 Montgomery                     11029                           bird
+      5689 Biederbecke                    21205 Manfried                  dog
+      5699 Biederbecke                    21004 Gutsy                     snake
+      6897 Drake                          16004 Napper                    cat
+    408763 Turrentine                     21305 Spot                      dog
+    408763 Turrentine                     21306 Shadow                    dog
+    408763 Turrentine                     21307 Buddy                     dog
+
+23 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4          , AN_ID
+  5          , AN_NAME
+  6          , AN_TYPE
+  7  from
+  8          VT_CLIENTS CLI
+  9          left outer join VT_ANIMALS ANI using (CL_ID)
+ 10          left outer join VT_EXAM_HEADERS EXH using (AN_ID)
+ 11  where
+ 12          EXH.EX_ID is null
+ 13  order by
+ 14          CL_ID, AN_ID
+ 15  ;
+
+     CL_ID CL_NAME_LAST                   AN_ID AN_NAME                   AN_TYPE
+---------- ------------------------- ---------- ------------------------- -------------------------
+       411 Carter                         15165 Burgess                   dog
+      1825 Harris                         16043 Ursula                    dog
+      1825 Harris                         16044 Triton                    dog
+      1825 Harris                         21002 Edger                     hedgehog
+      1825 Harris                         21006 Koshka                    hamster
+      1852 Dalrymple                      21007                           snake
+      1852 Dalrymple                      21314 Adalwine                  cat
+      1852 Dalrymple                      21315 Baldric                   cat
+      1852 Dalrymple                      21316 Etta                      cat
+      1852 Dalrymple                      21318 Waldrom                   cat
+      1852 Dalrymple                      21320 Morris                    olinguito
+      1852 Dalrymple                      21321 Morton                    olinguito
+      3423 Hawkins
+      3560 Monk                           10002 Gutsy                     cat
+      3560 Monk                           12038 Gutsy                     porcupine
+      4534 Montgomery                     11015 Kenny                     bird
+      4534 Montgomery                     11025                           bird
+      4534 Montgomery                     11029                           bird
+      5686 Biederbecke
+      5689 Biederbecke                    21205 Manfried                  dog
+      5698 Biederbecke
+      5699 Biederbecke                    21004 Gutsy                     snake
+      6897 Drake                          16004 Napper                    cat
+      7212 Davis
+     25479 Boston
+    408763 Turrentine                     21305 Spot                      dog
+    408763 Turrentine                     21306 Shadow                    dog
+    408763 Turrentine                     21307 Buddy                     dog
+
+28 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> select
+  2          CLI.CL_ID
+  3          , CLI.CL_NAME_LAST
+  4          , ANI.AN_ID
+  5          , ANI.AN_NAME
+  6          , ANI.AN_DOB
+  7  from
+  8          VT_CLIENTS CLI
+  9          join VT_ANIMALS ANI on (CLI.CL_ID = ANI.CL_ID)
+ 10  where
+ 11          CLI.CL_STATE in ('NY', 'MA')
+ 12          and ANI.AN_TYPE not in ('dog', 'cat', 'bird')
+ 13  ;
+
+     CL_ID CL_NAME_LAST                   AN_ID AN_NAME                   AN_DOB
+---------- ------------------------- ---------- ------------------------- ---------
+      3560 Monk                           12038 Gutsy                     29-APR-12
+      7152 Brubeck                        17026 3P#_26                    10-JAN-10
+      7152 Brubeck                        17027 3P#_25                    10-JAN-10
+
+3 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> select distinct
+  2          ANI.AN_ID
+  3          , ANI.AN_NAME
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  7  where
+  8          to_char(EXH.EX_DATE, 'YYYY') = to_char(sysdate, 'YYYY')
+  9  ;
+
+     AN_ID AN_NAME
+---------- -------------------------
+     17026 3P#_26
+     16002 Fritz
+     21001 Yoggie
+     12035 Mr Peanut
+     21317 Manfried
+     17025 25
+     15001 Big Mike
+     15002 George
+     16003 Ursula
+
+9 rows selected.
+
+SQL> 
+SQL> /*  TASK 09 */
+SQL> select distinct
+  2          SER.SRV_ID
+  3          , SER.SRV_LIST_PRICE
+  4          , SER.SRV_DESC
+  5          , SER.SRV_TYPE
+  6  from
+  7          VT_SERVICES SER
+  8          left outer join VT_EXAM_DETAILS EXD on (SER.SRV_ID = EXD.SRV_ID)
+  9  where
+ 10          SER.SRV_LIST_PRICE >= 100
+ 11          and EXD.EX_ID is null
+ 12  ;
+
+no rows selected
+
+SQL> 
+SQL> /*  THE END */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off

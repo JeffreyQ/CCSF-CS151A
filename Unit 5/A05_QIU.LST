@@ -1,0 +1,393 @@
+SQL> set feedback 1
+SQL> set pagesize 999
+SQL> set trimspool on
+SQL> set linesize 200
+SQL> set tab off
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> 
+SQL> /* Jeffrey Qiu */
+SQL> 
+SQL> /*  TASK 00 */
+SQL> select user, sysdate
+  2  from dual;
+
+USER                           SYSDATE
+------------------------------ ---------
+JQIU14                         20-SEP-15
+
+1 row selected.
+
+SQL> 
+SQL> /*  TASK 01 */
+SQL> select
+  2          CL_ID
+  3          , CL_NAME_LAST
+  4          , nvl(CL_NAME_FIRST, '(ZLS)')
+  5          , nvl(CL_PHONE, 'No phone number')
+  6  from
+  7          VT_CLIENTS
+  8  ;
+
+     CL_ID CL_NAME_LAST              NVL(CL_NAME_FIRST,'(ZLS)' NVL(CL_PHONE,'N
+---------- ------------------------- ------------------------- ---------------
+    408763 Turrentine                Stanley                   619.231.1515
+      4534 Montgomery                Wes                       No phone number
+      3560 Monk                      Theo                      212.582.6245
+      3423 Hawkins                   Coleman                   937.258.5645
+      1825 Harris                    Eddie                     No phone number
+      1852 Dalrymple                 Jack                      701.328.2725
+      6897 Drake                     Donald                    No phone number
+       411 Carter                    James                     510.258.4546
+      7152 Brubeck                   Dave                      258.257.2727
+      7212 Davis                     Donald                    No phone number
+     25479 Boston                    Edger                     No phone number
+      5698 Biederbecke               Sue                       217.239.6875
+      5699 Biederbecke               Sam                       415.239.6875
+      5686 Biederbecke               (ZLS)                     217.239.6945
+      5689 Biederbecke               (ZLS)                     415.239.6945
+
+15 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 02  */
+SQL> select
+  2          AN_ID || ': ' || AN_TYPE || ' ' || nvl(AN_NAME, 'no name') as "ANIMAL"
+  3  from
+  4          VT_ANIMALS
+  5  ;
+
+ANIMAL
+---------------------------------------------------------------------------------------------
+12035: bird Mr Peanut
+15401: lizard Pinkie
+21002: hedgehog Edger
+21003: dog Calvin Coolidge
+11029: bird no name
+15165: dog Burgess
+16004: cat Napper
+15001: chelonian Big Mike
+15002: chelonian George
+19845: dog Pinkie
+17025: lizard 25
+17026: lizard 3P#_26
+17027: lizard 3P#_25
+10002: cat Gutsy
+16002: porcupine Fritz
+21316: cat Etta
+21007: snake no name
+21004: snake Gutsy
+21006: hamster Koshka
+21317: cat Manfried
+21314: cat Adalwine
+11025: bird no name
+11015: bird Kenny
+12038: porcupine Gutsy
+17002: porcupine Fritzchen
+21315: cat Baldric
+21318: cat Waldrom
+21001: hedgehog Yoggie
+16003: cat Ursula
+21005: dormouse Koshka
+16044: dog Triton
+21320: olinguito Morris
+21321: olinguito Morton
+16043: dog Ursula
+21305: dog Spot
+21306: dog Shadow
+21307: dog Buddy
+21205: dog Manfried
+
+38 rows selected.
+
+SQL> 
+SQL> /*  TASK 03 */
+SQL> select
+  2          CL_ID as "Client Id"
+  3          , CL_NAME_LAST || decode(CL_NAME_FIRST, NULL, '', ', ' || CL_NAME_FIRST) as "Name"
+  4  from
+  5          VT_CLIENTS
+  6  ;
+
+ Client Id Name
+---------- ----------------------------------------------------
+    408763 Turrentine, Stanley
+      4534 Montgomery, Wes
+      3560 Monk, Theo
+      3423 Hawkins, Coleman
+      1825 Harris, Eddie
+      1852 Dalrymple, Jack
+      6897 Drake, Donald
+       411 Carter, James
+      7152 Brubeck, Dave
+      7212 Davis, Donald
+     25479 Boston, Edger
+      5698 Biederbecke, Sue
+      5699 Biederbecke, Sam
+      5686 Biederbecke
+      5689 Biederbecke
+
+15 rows selected.
+
+SQL> 
+SQL> /*  TASK 04 */
+SQL> select
+  2          SRV_ID
+  3          , to_char(SRV_LIST_PRICE, 9999.99) as "PRICE"
+  4          , to_char(round(SRV_LIST_PRICE, -1), 9999.99) as "TO_TENS"
+  5          , to_char(round(SRV_LIST_PRICE, 0), 9999.99) as "UNTO_DLR"
+  6  from
+  7          VT_SERVICES
+  8  ;
+
+    SRV_ID PRICE    TO_TENS  UNTO_DLR
+---------- -------- -------- --------
+       101    50.00    50.00    50.00
+       105    80.00    80.00    80.00
+       110   100.00   100.00   100.00
+       225    75.00    80.00    75.00
+       102    45.00    50.00    45.00
+       398    35.00    40.00    35.00
+       400    10.50    10.00    11.00
+       106    75.00    80.00    75.00
+       306    32.00    30.00    32.00
+       108    80.00    80.00    80.00
+       308    45.00    50.00    45.00
+       104    60.00    60.00    60.00
+       341    25.00    30.00    25.00
+       523    60.00    60.00    60.00
+       524    25.00    30.00    25.00
+       551    35.50    40.00    36.00
+       552    25.15    30.00    25.00
+       553    25.85    30.00    26.00
+      1002  2533.00  2530.00  2533.00
+      1003    26.00    30.00    26.00
+      4601   275.00   280.00   275.00
+       687    45.99    50.00    46.00
+       748    29.50    30.00    30.00
+       749    29.50    30.00    30.00
+       602   222.00   220.00   222.00
+       603    78.00    80.00    78.00
+       604   109.00   110.00   109.00
+       605   535.00   540.00   535.00
+       606    40.00    40.00    40.00
+       607    57.00    60.00    57.00
+       612    25.91    30.00    26.00
+       613    47.00    50.00    47.00
+       615    78.30    80.00    78.00
+       625   155.00   160.00   155.00
+
+34 rows selected.
+
+SQL> 
+SQL> /*  TASK 05 */
+SQL> select *
+  2  from
+  3          VT_SERVICES
+  4  where
+  5          regexp_instr(SRV_DESC, '*Feline*') > 0
+  6          and regexp_instr(SRV_DESC, '*Dental*') = 0
+  7  ;
+
+    SRV_ID SRV_LIST_PRICE SRV_DESC                                           SRV_TYPE
+---------- -------------- -------------------------------------------------- -------------------------
+       225             75 Feline PCR Series                                  medicine
+       108             80 Routine Exam-Feline                                office visit
+       308             45 Followup Exam-Feline                               office visit
+       551           35.5 First Feline PCR                                   medicine
+       552          25.15 Second Feline PCR                                  medicine
+       553          25.85 Third Feline PCR                                   medicine
+      4601            275 Feline Behaviour Modification Consultation         treatment
+
+7 rows selected.
+
+SQL> 
+SQL> /*  TASK 06 */
+SQL> select
+  2          EX_ID
+  3          , to_char(EX_DATE, 'DD-MON-YY') as "EXAMDATE1"
+  4          , to_char(EX_DATE, 'YYYY-MM-DD') as "EXAMDATE2"
+  5          , to_char(EX_DATE, 'MON DD, YYYY') as "EXAMDATE3"
+  6          , to_char(EX_DATE, 'fmMonth DD, YYYY') as "EXAMDATE4"
+  7  --      , to_char(EX_DATE, 'Month DD, YYYY') as "EXAMDATE5"
+  8  from
+  9          VT_EXAM_HEADERS
+ 10  ;
+
+     EX_ID EXAMDATE1          EXAMDATE2  EXAMDATE3             EXAMDATE4
+---------- ------------------ ---------- --------------------- ---------------------------------------------
+      3105 10-OCT-14          2014-10-10 OCT 10, 2014          October 10, 2014
+      3010 22-OCT-14          2014-10-22 OCT 22, 2014          October 22, 2014
+      3001 24-OCT-14          2014-10-24 OCT 24, 2014          October 24, 2014
+      3202 03-OCT-14          2014-10-03 OCT 03, 2014          October 3, 2014
+      3552 10-NOV-14          2014-11-10 NOV 10, 2014          November 10, 2014
+      3513 06-NOV-14          2014-11-06 NOV 06, 2014          November 6, 2014
+      3514 10-NOV-14          2014-11-10 NOV 10, 2014          November 10, 2014
+      3203 03-NOV-14          2014-11-03 NOV 03, 2014          November 3, 2014
+      3282 23-NOV-14          2014-11-23 NOV 23, 2014          November 23, 2014
+      3304 06-NOV-14          2014-11-06 NOV 06, 2014          November 6, 2014
+      3306 06-NOV-14          2014-11-06 NOV 06, 2014          November 6, 2014
+      3390 22-NOV-14          2014-11-22 NOV 22, 2014          November 22, 2014
+      3411 29-DEC-14          2014-12-29 DEC 29, 2014          December 29, 2014
+      3412 30-DEC-14          2014-12-30 DEC 30, 2014          December 30, 2014
+      3413 01-DEC-14          2014-12-01 DEC 01, 2014          December 1, 2014
+      3612 23-DEC-14          2014-12-23 DEC 23, 2014          December 23, 2014
+      3392 26-DEC-14          2014-12-26 DEC 26, 2014          December 26, 2014
+      3393 23-DEC-14          2014-12-23 DEC 23, 2014          December 23, 2014
+      3409 27-DEC-14          2014-12-27 DEC 27, 2014          December 27, 2014
+      3486 31-DEC-14          2014-12-31 DEC 31, 2014          December 31, 2014
+      4101 02-JAN-15          2015-01-02 JAN 02, 2015          January 2, 2015
+      4102 08-JAN-15          2015-01-08 JAN 08, 2015          January 8, 2015
+      4103 08-JAN-15          2015-01-08 JAN 08, 2015          January 8, 2015
+      3104 09-JAN-15          2015-01-09 JAN 09, 2015          January 9, 2015
+      3325 15-JAN-15          2015-01-15 JAN 15, 2015          January 15, 2015
+      3420 01-JAN-15          2015-01-01 JAN 01, 2015          January 1, 2015
+      3494 22-JAN-15          2015-01-22 JAN 22, 2015          January 22, 2015
+      3288 31-JAN-15          2015-01-31 JAN 31, 2015          January 31, 2015
+      3322 10-FEB-15          2015-02-10 FEB 10, 2015          February 10, 2015
+      3321 17-FEB-15          2015-02-17 FEB 17, 2015          February 17, 2015
+      3324 25-FEB-15          2015-02-25 FEB 25, 2015          February 25, 2015
+      3323 25-FEB-15          2015-02-25 FEB 25, 2015          February 25, 2015
+      4243 08-JUN-15          2015-06-08 JUN 08, 2015          June 8, 2015
+      4255 08-JUL-15          2015-07-08 JUL 08, 2015          July 8, 2015
+      4612 23-JUL-15          2015-07-23 JUL 23, 2015          July 23, 2015
+      4514 10-AUG-15          2015-08-10 AUG 10, 2015          August 10, 2015
+      4203 03-AUG-15          2015-08-03 AUG 03, 2015          August 3, 2015
+      4282 23-AUG-15          2015-08-23 AUG 23, 2015          August 23, 2015
+      4233 03-SEP-15          2015-09-03 SEP 03, 2015          September 3, 2015
+
+39 rows selected.
+
+SQL> 
+SQL> /*  TASK 07 */
+SQL> /* I assume that duplicates should all be shown. */
+SQL> select
+  2          ANI.AN_ID
+  3          , ANI.AN_NAME
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  7  where
+  8          to_char(EXH.EX_DATE, 'YYYY-MM') between '2015-01' and '2015-06'
+  9  ;
+
+     AN_ID AN_NAME
+---------- -------------------------
+     12035 Mr Peanut
+     15001 Big Mike
+     15001 Big Mike
+     15001 Big Mike
+     15002 George
+     17025 25
+     17026 3P#_26
+     16002 Fritz
+     16002 Fritz
+     16002 Fritz
+     16002 Fritz
+     16002 Fritz
+     16003 Ursula
+
+13 rows selected.
+
+SQL> 
+SQL> /*  TASK 08 */
+SQL> /* I assume that duplicates should all be shown. */
+SQL> select
+  2          ANI.AN_ID
+  3          , ANI.AN_NAME
+  4  from
+  5          VT_ANIMALS ANI
+  6          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  7  where
+  8          to_char(EXH.EX_DATE, 'YYYY-MM') = to_char(add_months(sysdate, -1), 'YYYY-MM')
+  9  ;
+
+     AN_ID AN_NAME
+---------- -------------------------
+     15002 George
+     16002 Fritz
+     21001 Yoggie
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*  TASK 09 */
+SQL> select
+  2          ANI.AN_ID as "ID"
+  3          , ANI.AN_NAME as "NAME"
+  4          , to_char(EXH.EX_DATE, 'YYYY-MM-DD') as "EXAM DATE"
+  5  from
+  6          VT_ANIMALS ANI
+  7          join VT_EXAM_HEADERS EXH on (ANI.AN_ID = EXH.AN_ID)
+  8  where
+  9          to_char(EXH.EX_DATE, 'YYYY-MM-DD') = to_char(last_day(EXH.EX_DATE), 'YYYY-MM-DD')
+ 10  ;
+
+        ID NAME                      EXAM DATE
+---------- ------------------------- ----------
+     21005 Koshka                    2014-12-31
+     15001 Big Mike                  2015-01-31
+
+2 rows selected.
+
+SQL> 
+SQL> /*  TASK 10 */
+SQL> VAR     var_random_row NUMBER;
+SQL> /* After the declaration, a value can be assigned to the variable. */
+SQL> BEGIN
+  2          select round(dbms_random.value(10, 25)) into :var_random_row from DUAL;
+  3  END;
+  4  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> select :var_random_row from dual;
+
+:VAR_RANDOM_ROW
+---------------
+             23
+
+1 row selected.
+
+SQL> 
+SQL> select EX_ID, SRV_ID, EX_FEE from VT_EXAM_DETAILS where rownum <= :var_random_row;
+
+     EX_ID     SRV_ID     EX_FEE
+---------- ---------- ----------
+      3105        523       50.5
+      3105        110        150
+      3010        104         25
+      3010        605        535
+      3001        104         25
+      3202        341         20
+      3552        308       2.25
+      3513        104         30
+      3513        110         75
+      3514        104         30
+      3514       1002         15
+      3514       1003         25
+      3203        524         20
+      3282        523         60
+      3282        110         50
+      3282        615      25.25
+      3304        341         25
+      3304       1003         25
+      3306        104         30
+      3306        687         45
+      3306       1002         25
+      3390        105         55
+      3390        101         70
+
+23 rows selected.
+
+SQL> 
+SQL> 
+SQL> /* The End */
+SQL> 
+SQL> 
+SQL> 
+SQL> spool off
